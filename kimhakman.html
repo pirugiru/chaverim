@@ -169,6 +169,108 @@ h1 {
   text-decoration:none;
 }
 .foot { margin:14px 4px 0; text-align:center; color:#777e76; font-size:13px; }
+
+@media (min-width: 900px) {
+  body {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:28px;
+  }
+
+  .wrap {
+    width:min(1180px, 100%);
+    padding:0;
+  }
+
+  .card {
+    display:grid;
+    grid-template-columns:minmax(420px, 0.95fr) minmax(500px, 1.05fr);
+    grid-template-areas:
+      "brand actions"
+      "person save"
+      "person details";
+    align-items:stretch;
+    border-radius:28px;
+    overflow:hidden;
+    min-height:680px;
+  }
+
+  .brand {
+    grid-area:brand;
+    padding:34px 34px 28px;
+    border-bottom:1px solid var(--line);
+    border-right:1px solid var(--line);
+  }
+
+  .logo {
+    width:min(88%, 410px);
+  }
+
+  .company-caption {
+    margin-top:14px;
+    font-size:14px;
+  }
+
+  .person {
+    grid-area:person;
+    padding:34px;
+    border-bottom:0;
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+  }
+
+  .role {
+    align-self:flex-start;
+  }
+
+  h1 {
+    font-size:52px;
+    margin-top:14px;
+  }
+
+  .business {
+    margin-top:24px;
+    font-size:20px;
+  }
+
+  .actions {
+    grid-area:actions;
+    padding:32px 34px 14px;
+    grid-template-columns:repeat(3, 1fr);
+  }
+
+  .action,
+  .action.full {
+    grid-column:auto;
+    min-height:66px;
+    font-size:18px;
+  }
+
+  .savebox {
+    grid-area:save;
+    margin:10px 34px 10px;
+    padding:20px;
+  }
+
+  .details {
+    grid-area:details;
+    padding:8px 34px 30px;
+  }
+
+  .row {
+    grid-template-columns:100px 1fr;
+    font-size:17px;
+  }
+
+  .foot {
+    margin-top:16px;
+  }
+}
+
 @media(max-width:480px) {
   .wrap { padding:0; }
   .card {
