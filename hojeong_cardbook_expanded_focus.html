@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>호정이를 위한 마음 카드북</title>
+  <style>
+    :root{
+      --bg1:#fff4f6;
+      --bg2:#fffaf0;
+      --ink:#22303a;
+      --muted:#6f7a85;
+      --rose:#e77491;
+      --rose-dark:#b94d67;
+      --rose-soft:#fff1f5;
+      --amber:#fff6dc;
+      --sky:#eef8ff;
+      --green:#eefbf3;
+      --violet:#f6f1ff;
+      --line:#f2d9e0;
+      --card:#fffffffa;
+      --shadow:0 16px 38px rgba(105,55,70,.12);
+      --radius:28px;
+      --safe-bottom:env(safe-area-inset-bottom, 0px);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%; overscroll-behavior:none;}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 12% -8%, #ffdce7 0, transparent 30%),
+        radial-gradient(circle at 98% 2%, #ffe9b1 0, transparent 27%),
+        linear-gradient(180deg,var(--bg1),#fff 48%,var(--bg2));
+      overflow:hidden;
+    }
+
+    .app{
+      height:100dvh;
+      max-width:560px;
+      margin:0 auto;
+      display:grid;
+      grid-template-rows:42px minmax(0,1fr) 38px;
+      gap:7px;
+      padding:8px 10px calc(8px + var(--safe-bottom));
+      position:relative;
+    }
+
+    .reader-top{
+      display:grid;
+      grid-template-columns:58px minmax(0,1fr) 46px;
+      gap:8px;
+      align-items:center;
+      min-height:0;
+    }
+    .toc-btn,.mini-btn{
+      height:38px;
+      border:1px solid var(--line);
+      background:#ffffffdf;
+      color:var(--rose-dark);
+      border-radius:15px;
+      font-size:12.5px;
+      font-weight:950;
+      box-shadow:0 7px 16px rgba(105,55,70,.08);
+      cursor:pointer;
+    }
+    .top-mid{
+      min-width:0;
+      display:grid;
+      gap:5px;
+      align-content:center;
+    }
+    .chapter-label{
+      min-width:0;
+      color:#5f404a;
+      font-size:13px;
+      font-weight:950;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      letter-spacing:-.02em;
+    }
+    .track{
+      height:5px;
+      background:#ffe2ea;
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .fill{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,#e77491,#f2aa55);
+      border-radius:999px;
+      transition:width .24s ease;
+    }
+    .counter{
+      color:var(--rose-dark);
+      font-size:12px;
+      font-weight:950;
+      text-align:right;
+      white-space:nowrap;
+    }
+
+    .slider{
+      min-height:0;
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      scroll-behavior:smooth;
+      scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+      padding:1px 0 3px;
+    }
+    .slider::-webkit-scrollbar{display:none}
+
+    .chapter{
+      flex:0 0 100%;
+      scroll-snap-align:center;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      min-height:0;
+      position:relative;
+    }
+    .chapter::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:5px;
+      background:linear-gradient(90deg,#e77491,#ffd166);
+      z-index:2;
+    }
+    .chapter-head{
+      padding:16px 17px 10px;
+      background:linear-gradient(180deg,#ffffff,rgba(255,255,255,.92));
+      border-bottom:1px solid #fae4e9;
+      position:relative;
+    }
+    .kicker{
+      color:var(--rose-dark);
+      font-size:11.5px;
+      font-weight:950;
+      margin-bottom:7px;
+      letter-spacing:.01em;
+    }
+    .chapter-title{
+      display:flex;
+      gap:9px;
+      align-items:flex-start;
+    }
+    .emoji{
+      width:34px;
+      height:34px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:var(--rose-soft);
+      font-size:18px;
+      flex:0 0 auto;
+    }
+    h2{
+      margin:0;
+      font-size:20.5px;
+      line-height:1.36;
+      letter-spacing:-.038em;
+      word-break:keep-all;
+    }
+    .chapter-sub{
+      color:var(--muted);
+      font-size:13.2px;
+      line-height:1.62;
+      margin:8px 0 0 43px;
+      word-break:keep-all;
+    }
+    .chapter-body{
+      overflow-y:auto;
+      padding:14px 17px 18px;
+      -webkit-overflow-scrolling:touch;
+      scroll-padding:14px;
+    }
+    .chapter-body::-webkit-scrollbar{width:4px}
+    .chapter-body::-webkit-scrollbar-thumb{background:#efbfcc;border-radius:99px}
+
+    p{
+      margin:7px 0;
+      font-size:15.5px;
+      line-height:1.76;
+      letter-spacing:-.012em;
+      word-break:keep-all;
+    }
+    b,strong{color:#17242e}
+    .muted{color:var(--muted)}
+    .small{font-size:13.2px;line-height:1.7}
+
+    .pillrow{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin:12px 0 3px;
+    }
+    .pill{
+      border:1px solid #ffd7e1;
+      background:#fff3f7;
+      color:#ad4661;
+      border-radius:999px;
+      padding:6px 9px;
+      font-size:12px;
+      font-weight:950;
+    }
+
+    .note{
+      border:1px solid #fae0e6;
+      background:#fff7f9;
+      border-radius:18px;
+      padding:12px;
+      margin:10px 0;
+      font-size:14.3px;
+      line-height:1.72;
+      word-break:keep-all;
+    }
+    .note.amber{background:#fff9e9;border-color:#f8e8b5}
+    .note.sky{background:#f4fbff;border-color:#d9efff}
+    .note.green{background:#f3fff7;border-color:#d8f2df}
+    .note.violet{background:#f8f4ff;border-color:#e5d9ff}
+
+    .flow{
+      display:grid;
+      gap:8px;
+      margin:12px 0;
+    }
+    .flow-row{
+      display:grid;
+      grid-template-columns:31px 1fr;
+      gap:9px;
+      align-items:start;
+    }
+    .num{
+      width:31px;height:31px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#ffe1ea;
+      color:#c94c6c;
+      font-weight:950;
+      font-size:12px;
+    }
+    .flow-box{
+      border:1px solid #f7dde4;
+      background:#fff8fa;
+      border-radius:17px;
+      padding:10px 12px;
+    }
+    .flow-box b{display:block;font-size:14px;margin-bottom:2px}
+    .flow-box span{display:block;color:var(--muted);font-size:12.7px;line-height:1.5}
+
+    details{
+      border:1px solid #f5dce3;
+      background:#fff;
+      border-radius:18px;
+      overflow:hidden;
+      margin:9px 0;
+    }
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:13px 14px;
+      font-size:14.3px;
+      font-weight:950;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      line-height:1.45;
+      word-break:keep-all;
+    }
+    summary::-webkit-details-marker{display:none}
+    summary::after{
+      content:"＋";
+      color:var(--rose);
+      font-weight:950;
+      flex:0 0 auto;
+    }
+    details[open] summary::after{content:"－"}
+    .detail{
+      border-top:1px solid #fae4e9;
+      padding:12px 14px 14px;
+      color:#59636f;
+      font-size:14.3px;
+      line-height:1.74;
+      word-break:keep-all;
+    }
+
+    .quote{
+      border-left:4px solid #e77491;
+      padding:5px 0 5px 11px;
+      color:#4f5964;
+      line-height:1.78;
+      font-size:14.5px;
+      margin:10px 0;
+      word-break:keep-all;
+    }
+
+    .checklist{
+      display:grid;
+      gap:8px;
+      margin:11px 0;
+    }
+    .check{
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+      border:1px solid #fae3e9;
+      background:#fff;
+      border-radius:16px;
+      padding:10px 11px;
+      font-size:14.3px;
+      line-height:1.62;
+      word-break:keep-all;
+    }
+    .check::before{
+      content:"✓";
+      color:var(--rose);
+      font-weight:950;
+      margin-top:1px;
+      flex:0 0 auto;
+    }
+
+    .twocol{
+      display:grid;
+      gap:9px;
+      margin:10px 0;
+    }
+    .mini{
+      border:1px solid #f1dfe4;
+      background:#fff;
+      border-radius:17px;
+      padding:12px;
+      font-size:14.3px;
+      line-height:1.68;
+      word-break:keep-all;
+    }
+    .mini b{display:block;margin-bottom:4px}
+
+    .verse{
+      background:#f6fbff;
+      border:1px solid #dcefff;
+      border-radius:18px;
+      padding:13px;
+      margin:9px 0;
+    }
+    .verse .ref{
+      font-weight:950;
+      margin-bottom:6px;
+      font-size:14.3px;
+    }
+    .verse blockquote{
+      margin:7px 0;
+      padding:0 0 0 11px;
+      border-left:3px solid #8dc7ee;
+      color:#40505e;
+      font-size:14.3px;
+      line-height:1.74;
+      word-break:keep-all;
+    }
+    a{color:#2e78a3;word-break:break-all}
+
+    .nav{
+      display:grid;
+      grid-template-columns:42px 1fr 42px;
+      gap:8px;
+      align-items:center;
+      min-height:0;
+    }
+    .nav button{
+      height:36px;
+      border:1px solid var(--line);
+      background:#ffffffdf;
+      border-radius:15px;
+      color:var(--rose-dark);
+      font-size:18px;
+      font-weight:950;
+      box-shadow:0 7px 16px rgba(105,55,70,.08);
+      cursor:pointer;
+    }
+    .nav button:disabled{
+      opacity:.38;
+      cursor:not-allowed;
+    }
+    .dots{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:5px;
+      min-width:0;
+      overflow:hidden;
+      padding:0 2px;
+    }
+    .dot{
+      appearance:none;
+      border:0;
+      padding:0;
+      width:7px;
+      height:7px;
+      min-width:7px;
+      min-height:7px;
+      border-radius:999px;
+      background:#f1c3cf;
+      transition:width .22s ease, background .22s ease, transform .22s ease;
+      flex:0 0 auto;
+      cursor:pointer;
+      box-shadow:none;
+    }
+    .dot.active{
+      width:24px;
+      min-width:24px;
+      background:var(--rose);
+      transform:translateY(-1px);
+    }
+    .dot:focus-visible{
+      outline:2px solid #e77491;
+      outline-offset:3px;
+    }
+
+    .cover-card{
+      display:grid;
+      gap:9px;
+      margin:12px 0;
+    }
+    .cover-item{
+      display:grid;
+      grid-template-columns:31px 1fr;
+      gap:9px;
+      align-items:center;
+      background:#fff8fa;
+      border:1px solid #fae1e7;
+      border-radius:17px;
+      padding:10px 11px;
+      font-size:13.8px;
+      line-height:1.55;
+      word-break:keep-all;
+    }
+    .cover-item span:first-child{
+      width:31px;height:31px;border-radius:12px;background:#ffe3ec;display:grid;place-items:center;
+    }
+
+    .backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(55,38,45,.22);
+      backdrop-filter:blur(3px);
+      z-index:40;
+      opacity:0;
+      pointer-events:none;
+      transition:.18s ease;
+      border-radius:0;
+    }
+    .backdrop.open{opacity:1; pointer-events:auto}
+
+    .toc-sheet{
+      position:absolute;
+      left:10px;
+      right:10px;
+      top:54px;
+      z-index:50;
+      max-height:min(70vh,520px);
+      background:#fffffffb;
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:0 22px 55px rgba(65,38,48,.20);
+      padding:14px;
+      display:none;
+      overflow:auto;
+    }
+    .toc-sheet.open{display:block}
+    .toc-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .toc-head b{
+      font-size:16px;
+      letter-spacing:-.02em;
+    }
+    .close-btn{
+      width:34px;
+      height:34px;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:#fff7f9;
+      color:var(--rose-dark);
+      font-weight:950;
+      cursor:pointer;
+    }
+    .chapter-tabs{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+    .tab{
+      border:1px solid var(--line);
+      background:#fff;
+      color:#805662;
+      border-radius:16px;
+      padding:11px 10px;
+      font-size:13px;
+      line-height:1.35;
+      font-weight:950;
+      text-align:left;
+      cursor:pointer;
+      min-height:44px;
+    }
+    .tab.active{
+      background:var(--rose);
+      color:white;
+      border-color:var(--rose);
+      box-shadow:0 7px 16px rgba(231,116,145,.24);
+    }
+
+    @media (max-height:720px){
+      .app{
+        grid-template-rows:38px minmax(0,1fr) 34px;
+        gap:6px;
+        padding:7px 9px calc(7px + var(--safe-bottom));
+      }
+      .reader-top{grid-template-columns:55px minmax(0,1fr) 43px}
+      .toc-btn,.mini-btn{height:35px;font-size:12px;border-radius:14px}
+      .chapter-label{font-size:12.5px}
+      .counter{font-size:11.5px}
+      .chapter-head{padding:14px 15px 8px}
+      .chapter-sub{display:none}
+      .chapter-body{padding:12px 15px 15px}
+      h2{font-size:19px}
+      p{font-size:15px;line-height:1.68}
+      .nav button{height:32px;font-size:17px}
+      .toc-sheet{top:48px}
+    }
+
+    @media (min-width:640px){
+      .app{padding-top:12px; gap:9px; grid-template-rows:46px minmax(0,1fr) 40px}
+      .reader-top{grid-template-columns:64px minmax(0,1fr) 50px}
+      .chapter-head{padding:19px 22px 12px}
+      .chapter-body{padding:17px 22px 23px}
+      h2{font-size:22px}
+      p{font-size:16px}
+      .twocol{grid-template-columns:1fr 1fr}
+      .chapter-tabs{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="reader-top">
+      <button class="toc-btn" id="tocToggle" type="button">목차</button>
+      <div class="top-mid">
+        <div class="chapter-label" id="chapterLabel">1. 시작</div>
+        <div class="track"><div class="fill" id="fill"></div></div>
+      </div>
+      <div class="counter" id="counter">1 / 10</div>
+    </header>
+
+    <div class="backdrop" id="backdrop"></div>
+    <section class="toc-sheet" id="tocSheet" aria-label="챕터 목차">
+      <div class="toc-head">
+        <b>챕터 목차</b>
+        <button class="close-btn" id="tocClose" type="button" aria-label="목차 닫기">×</button>
+      </div>
+      <nav class="chapter-tabs" id="tabs"></nav>
+    </section>
+
+    <main class="slider" id="slider" aria-label="카드 챕터">
+
+      <section class="chapter" data-title="시작">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 1 · 시작</div>
+          <div class="chapter-title">
+            <div class="emoji">🤍</div>
+            <h2>호정이는 문제 있는 사람이 아니라, 지금 마음이 너무 많은 걸 한꺼번에 지키려는 중일 수 있어요</h2>
+          </div>
+          <p class="chapter-sub">이 카드북은 “왜 안 되지?”보다 “내 안에서 무엇이 동시에 일어나고 있지?”를 보는 흐름이에요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>호정이 안에는 아마 두 마음이 같이 있어요.</p>
+          <div class="twocol">
+            <div class="mini"><b>가까워지고 싶은 마음</b>보고 싶고, 관계를 현실로 옮기고 싶고, 더 이상 질질 끌고 싶지 않은 마음.</div>
+            <div class="mini"><b>나를 지키고 싶은 마음</b>감정이 커지고, 내가 흔들리고, 나중에 상처가 남을까 봐 멈추려는 마음.</div>
+          </div>
+          <p>그래서 호정이의 어려움은 단순히 “만남이 싫다”가 아니라, <b>가까워지고 싶은 마음과 스스로를 보호하려는 마음이 충돌하는 상태</b>에 가까워요.</p>
+          <p class="note">오늘의 핵심 문장: <b>나는 이상한 사람이 아니라, 내 마음이 무엇을 무서워하는지 배우는 중이다.</b></p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="상태 지도">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 2 · 상태 지도</div>
+          <div class="chapter-title">
+            <div class="emoji">🧭</div>
+            <h2>호정이의 상태를 조금 더 정확히 지도처럼 보면</h2>
+          </div>
+          <p class="chapter-sub">하나의 문제라기보다 여러 마음이 겹친 상태예요.</p>
+        </div>
+        <div class="chapter-body">
+          <div class="flow">
+            <div class="flow-row"><div class="num">1</div><div class="flow-box"><b>자기노출 부담</b><span>내 얼굴, 표정, 몸, 반응이 상대에게 실제로 보이는 것.</span></div></div>
+            <div class="flow-row"><div class="num">2</div><div class="flow-box"><b>감정 경계 불안</b><span>마음이 커졌을 때 내 생활과 기준으로 다시 돌아올 수 있을지 모르는 것.</span></div></div>
+            <div class="flow-row"><div class="num">3</div><div class="flow-box"><b>상실 예측</b><span>시작하기도 전에 “끝나면 어떡하지”를 먼저 상상하는 것.</span></div></div>
+            <div class="flow-row"><div class="num">4</div><div class="flow-box"><b>미안함 회피</b><span>내가 피해를 주는 사람 같아지면 더 잘하기보다 관계를 줄이고 싶어지는 것.</span></div></div>
+            <div class="flow-row"><div class="num">5</div><div class="flow-box"><b>막연한 준비</b><span>준비하고 있다고 느끼지만, 실제 행동 기준은 흐릿하게 남는 것.</span></div></div>
+          </div>
+          <p class="note green">이 다섯 가지가 동시에 작동하면, 호정이 스스로도 “정확히 왜 어려운지 모르겠어”라고 느낄 수 있어요. 이유가 없는 게 아니라, 이유가 너무 여러 겹인 거예요.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="자기노출">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 3 · 자기노출 회피</div>
+          <div class="chapter-title">
+            <div class="emoji">👀</div>
+            <h2>자기노출이 어렵다는 건, 나를 보여주기 싫다는 뜻만은 아니에요</h2>
+          </div>
+          <p class="chapter-sub">보여지는 순간 관계가 실제가 되기 때문에 어려울 수 있어요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>호정이에게 자기노출은 단순히 “얼굴을 보여주는 일”이 아닐 수 있어요.</p>
+          <div class="checklist">
+            <div class="check">내가 상상 속 사람이 아니라 실제 사람으로 보이는 일</div>
+            <div class="check">상대가 나를 평가하거나 실망할 수 있다고 느끼는 일</div>
+            <div class="check">내 부족함이 관계 안으로 들어오는 일</div>
+            <div class="check">내가 숨을 수 있었던 안전한 거리가 줄어드는 일</div>
+          </div>
+          <p>그래서 자기노출이 어려운 사람에게 “그냥 보여주면 되잖아”는 너무 큰 말이 될 수 있어요.</p>
+          <p class="note">더 정확한 질문은 이거예요. <b>“나는 내 모습을 보여주는 게 무서운 걸까, 내 모습이 보인 뒤 관계가 달라질까 봐 무서운 걸까?”</b></p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="사진·영상">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 4 · 사진과 영상통화</div>
+          <div class="chapter-title">
+            <div class="emoji">📷</div>
+            <h2>사진과 영상통화가 오히려 더 위험하게 느껴지는 이유</h2>
+          </div>
+          <p class="chapter-sub">호정이 마음의 기준으로 보면 순서가 다를 수 있어요.</p>
+        </div>
+        <div class="chapter-body">
+          <details open>
+            <summary>사진은 “남는 자기노출”이라 더 무서울 수 있어요</summary>
+            <div class="detail">사진은 저장될 수 있고, 나중에도 다시 볼 수 있어요. 관계가 끝나도 상대에게 남을 수 있다는 느낌이 생기면, 실제 만남보다 더 통제 불가능하게 느껴질 수 있어요.</div>
+          </details>
+          <details>
+            <summary>영상통화는 “실시간 평가”처럼 느껴질 수 있어요</summary>
+            <div class="detail">상대 표정, 침묵, 어색함, 반응을 바로 마주해야 해요. 작은 반응도 “실망했나?”처럼 크게 해석될 수 있어요.</div>
+          </details>
+          <details>
+            <summary>만남은 오히려 “짧게 지나갈 수 있는 사건”일 수 있어요</summary>
+            <div class="detail">짧은 만남은 저장되지 않고 지나갈 수 있어요. 그래서 호정이에게는 사진·영상보다 실제 짧은 만남이 덜 위험하게 느껴질 수 있어요.</div>
+          </details>
+          <p class="note sky"><b>정리:</b> 호정이에게 쉬운 순서는 “일반적인 순서”가 아니라, <b>내가 덜 통제 불가능하다고 느끼는 순서</b>일 수 있어요.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="감정 경계">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 5 · 감정 경계</div>
+          <div class="chapter-title">
+            <div class="emoji">💓</div>
+            <h2>가장 무서운 건 만남 자체보다, 만난 뒤 내 마음이 커지는 일일 수 있어요</h2>
+          </div>
+          <p class="chapter-sub">감정이 생기는 것과 감정에 휩쓸리는 것은 달라요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>호정이가 무서워하는 건 “필기를 보기 싫다”가 아니라, 필기를 본 뒤 마음이 너무 커져서 스스로를 잃을까 봐일 수 있어요.</p>
+          <div class="twocol">
+            <div class="mini"><b>감정이 생김</b>보고 싶다, 좋다, 설렌다, 불안하다. 이것은 자연스러운 반응이에요.</div>
+            <div class="mini"><b>감정에 휩쓸림</b>내 생활, 기준, 판단이 전부 상대 반응 중심으로 움직이는 상태예요.</div>
+          </div>
+          <p>목표는 감정을 안 느끼는 게 아니에요. 목표는 <b>감정이 생겨도 다시 내 자리로 돌아올 수 있는 경험</b>을 만드는 거예요.</p>
+          <p class="quote">“나는 필기를 보고 마음이 커질 수 있다. 그래도 그 마음을 느낀 뒤 다시 내 생활로 돌아오는 연습을 할 수 있다.”</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="끝을 먼저 봄">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 6 · 시작 전에 끝을 봄</div>
+          <div class="chapter-title">
+            <div class="emoji">🌧️</div>
+            <h2>시작하기 전부터 끝을 걱정하는 마음</h2>
+          </div>
+          <p class="chapter-sub">이건 비관이 아니라, 상처를 미리 막으려는 마음일 수 있어요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>사진을 보내기도 전에 “관계가 끝나면 이 사진이 남겠지”를 생각할 수 있어요. 만나기도 전에 “잘 안 되면 이 장소가 계속 생각나겠지”를 걱정할 수 있어요.</p>
+          <p>이 마음은 호정이를 괴롭히지만, 동시에 호정이를 보호하려는 마음이기도 해요.</p>
+          <div class="flow">
+            <div class="flow-row"><div class="num">1</div><div class="flow-box"><b>시작의 가능성</b><span>만날 수도 있다, 가까워질 수도 있다.</span></div></div>
+            <div class="flow-row"><div class="num">2</div><div class="flow-box"><b>끝의 상상</b><span>끝나면 아프겠다, 흔적이 남겠다.</span></div></div>
+            <div class="flow-row"><div class="num">3</div><div class="flow-box"><b>현재 행동 멈춤</b><span>상처를 피하기 위해 시작 자체를 미룬다.</span></div></div>
+          </div>
+          <p class="note amber"><b>스스로에게 물어보기:</b> “내가 지금 끝을 준비하는 걸까, 아니면 시작을 피하기 위해 끝을 먼저 보고 있는 걸까?”</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="미안함">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 7 · 미안함의 방향</div>
+          <div class="chapter-title">
+            <div class="emoji">🫧</div>
+            <h2>미안하면 더 잘해주기보다 관계를 줄이고 싶어질 수 있어요</h2>
+          </div>
+          <p class="chapter-sub">이 패턴을 알면, 미안함이 바로 결론이 되지 않게 할 수 있어요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>호정이는 미안함이 커지면 “더 잘해야지”보다 “내가 더 피해 주기 전에 물러나야 하나”로 갈 수 있어요.</p>
+          <div class="twocol">
+            <div class="mini"><b>미안함 → 회복</b>미안하니까 설명하고, 조율하고, 작게라도 다시 해본다.</div>
+            <div class="mini"><b>미안함 → 축소</b>미안하니까 관계를 줄이고, 끝내야 할 것 같고, 도망치고 싶어진다.</div>
+          </div>
+          <p>두 번째 방향은 착해서 생기는 마음일 수도 있지만, 관계 안에서는 상대에게 “나를 선택하지 않는다”처럼 느껴질 수 있어요.</p>
+          <p class="note green"><b>연습 문장:</b> “미안함이 든다고 바로 관계를 줄이지 않아도 된다. 먼저 내가 무엇을 피하고 싶은지 적어볼 수 있다.”</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="막연함">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 8 · 막연한 준비</div>
+          <div class="chapter-title">
+            <div class="emoji">🌫️</div>
+            <h2>“나아지고 있다”와 “관계에서 움직일 수 있다”는 다를 수 있어요</h2>
+          </div>
+          <p class="chapter-sub">상담이 무의미하다는 뜻이 아니라, 연애 영역은 따로 연습이 필요할 수 있다는 뜻이에요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>호정이는 상담과 감정일기를 통해 분명히 나아지고 있을 수 있어요. 그런데 그 변화가 바로 사진, 영상통화, 만남으로 연결되지 않을 수 있어요.</p>
+          <div class="checklist">
+            <div class="check">가족 문제에서는 감정을 조금 더 볼 수 있게 됨</div>
+            <div class="check">일상에서는 조절이 조금 생김</div>
+            <div class="check">하지만 필기와의 관계에서는 감정이 훨씬 크게 움직임</div>
+            <div class="check">그래서 연애 영역만 따로 막힌 것처럼 느껴짐</div>
+          </div>
+          <p class="note">이건 “전혀 안 나아졌다”가 아니라, <b>제일 무서운 영역은 별도의 다리와 별도의 언어가 필요하다</b>는 뜻일 수 있어요.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="상태 질문">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 9 · 스스로 깨닫는 질문</div>
+          <div class="chapter-title">
+            <div class="emoji">🪞</div>
+            <h2>호정이가 자기 상태를 더 정확히 보기 위한 질문들</h2>
+          </div>
+          <p class="chapter-sub">대답보다 발견이 목적이에요.</p>
+        </div>
+        <div class="chapter-body">
+          <div class="checklist">
+            <div class="check">나는 필기를 피하는 걸까, 필기를 만났을 때 올라올 내 감정을 피하는 걸까?</div>
+            <div class="check">내가 가장 무서워하는 건 외모 평가일까, 감정이 커지는 일일까, 끝난 뒤 흔적일까?</div>
+            <div class="check">“관계를 끝내야 하나”는 진짜 결론일까, 지금 불안을 끊고 싶은 마음일까?</div>
+            <div class="check">나는 나를 지키려는 마음과 관계를 선택하려는 마음을 둘 다 인정하고 있나?</div>
+            <div class="check">지금 필요한 건 더 많은 생각일까, 더 작은 행동 기준일까?</div>
+            <div class="check">나는 어떤 조건이면 “무섭지만 해볼 수 있다”고 느낄까?</div>
+          </div>
+          <p class="note amber">걸리는 질문이 있다면, 그 질문이 다음 상담이나 감정일기에 가져갈 중요한 실마리예요.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="감정일기 확장">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 10 · 감정일기 확장</div>
+          <div class="chapter-title">
+            <div class="emoji">📝</div>
+            <h2>감정일기를 “감정 설명”에서 “선택 준비”로 확장해보기</h2>
+          </div>
+          <p class="chapter-sub">이미 잘하고 있는 걸 더 실전적으로 쓰는 방법이에요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>감정일기를 이미 쓰고 있다면, 이제는 아래 6칸으로 써보면 좋아요.</p>
+          <div class="flow">
+            <div class="flow-row"><div class="num">1</div><div class="flow-box"><b>상황</b><span>무슨 이야기를 들었나? 사진, 영상, 만남, 끝, 미안함?</span></div></div>
+            <div class="flow-row"><div class="num">2</div><div class="flow-box"><b>감정</b><span>무서움, 설렘, 미안함, 수치심, 답답함 중 무엇인가?</span></div></div>
+            <div class="flow-row"><div class="num">3</div><div class="flow-box"><b>강도</b><span>0~10점으로 적기. “많이”보다 숫자가 좋아요.</span></div></div>
+            <div class="flow-row"><div class="num">4</div><div class="flow-box"><b>피하고 싶은 것</b><span>사람? 감정? 평가? 끝? 저장되는 흔적?</span></div></div>
+            <div class="flow-row"><div class="num">5</div><div class="flow-box"><b>자동 결론</b><span>끝내야 하나, 못 하겠다, 미안하니까 물러나야 하나.</span></div></div>
+            <div class="flow-row"><div class="num">6</div><div class="flow-box"><b>작은 선택</b><span>오늘 결론 내리지 않기, 상담에 가져가기, 한 줄만 말하기.</span></div></div>
+          </div>
+          <p class="note green"><b>목표:</b> 감정을 없애는 게 아니라, 감정이 결론을 대신 내리지 않게 하는 것.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="예측 검증">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 11 · 예측과 실제 나누기</div>
+          <div class="chapter-title">
+            <div class="emoji">🔍</div>
+            <h2>상상 속 위험과 실제 경험을 분리해보기</h2>
+          </div>
+          <p class="chapter-sub">불안은 종종 미래를 현재처럼 느끼게 해요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>어떤 행동을 하기 전, 마음은 최악의 결과를 거의 실제처럼 느낄 수 있어요. 그래서 예측과 실제를 나눠 적는 게 좋아요.</p>
+          <div class="twocol">
+            <div class="mini"><b>예측</b>만나면 감정이 10점까지 올라가고, 하루 종일 아무것도 못 할 것이다.</div>
+            <div class="mini"><b>실제</b>처음엔 8점이었지만, 30분 뒤 5점으로 내려갔다. 저녁에는 씻고 밥을 먹었다.</div>
+          </div>
+          <div class="checklist">
+            <div class="check">행동 전 예측을 숫자로 적기</div>
+            <div class="check">행동 뒤 실제 감정 강도 적기</div>
+            <div class="check">감정이 내려가는 데 걸린 시간 적기</div>
+            <div class="check">내가 지킨 경계 하나 적기</div>
+            <div class="check">다음에 줄이거나 바꿀 조건 적기</div>
+          </div>
+          <p class="note">이건 나를 시험하는 게 아니라, <b>내 상상이 언제 실제보다 커지는지 배우는 과정</b>이에요.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="행동 단위">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 12 · 작은 행동 단위</div>
+          <div class="chapter-title">
+            <div class="emoji">🧩</div>
+            <h2>“만남”을 하나의 큰 덩어리로 보지 않기</h2>
+          </div>
+          <p class="chapter-sub">행동이 작아질수록 마음은 덜 압도돼요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>호정이에게 “만나자”는 말은 너무 큰 덩어리일 수 있어요. 그래서 행동을 아주 작게 쪼개야 해요.</p>
+          <div class="flow">
+            <div class="flow-row"><div class="num">1</div><div class="flow-box"><b>상상</b><span>필기를 5분 보는 장면만 상상하고 감정 기록하기.</span></div></div>
+            <div class="flow-row"><div class="num">2</div><div class="flow-box"><b>동선</b><span>어디서 만나고 어디로 돌아올지 지도처럼 정하기.</span></div></div>
+            <div class="flow-row"><div class="num">3</div><div class="flow-box"><b>종료 문장</b><span>“오늘은 여기까지 하고 들어갈게”를 미리 준비하기.</span></div></div>
+            <div class="flow-row"><div class="num">4</div><div class="flow-box"><b>짧은 실행</b><span>5~10분 인사만 하고 헤어지기.</span></div></div>
+            <div class="flow-row"><div class="num">5</div><div class="flow-box"><b>사후 정리</b><span>감정 점수, 생각, 몸 반응, 다음 조정점 기록하기.</span></div></div>
+          </div>
+          <p class="note sky"><b>좋은 시도란:</b> 떨리지 않는 시도가 아니라, 떨렸지만 정해둔 기준 안에서 끝낼 수 있었던 시도예요.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="사진·영상 방법">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 13 · 사진·영상의 대안</div>
+          <div class="chapter-title">
+            <div class="emoji">📱</div>
+            <h2>사진과 영상통화가 어렵다면, 다른 방식으로 감정 연습을 할 수 있어요</h2>
+          </div>
+          <p class="chapter-sub">목표는 사진을 보내는 게 아니라, 자기노출 감정을 이해하는 거예요.</p>
+        </div>
+        <div class="chapter-body">
+          <details open>
+            <summary>보내지 않는 사진 연습</summary>
+            <div class="detail">사진을 찍고 보내지 않아요. 대신 “이 사진을 필기가 보면 내가 제일 무서운 게 뭔지”만 적어요. 저장, 평가, 실망, 끝의 흔적 중 무엇인지 보는 거예요.</div>
+          </details>
+          <details>
+            <summary>카메라 화면 혼자 보기</summary>
+            <div class="detail">영상통화 전에 혼자 카메라 화면을 30초 봐요. 내 얼굴을 보는 감각 자체가 어떤 감정을 일으키는지 관찰해요.</div>
+          </details>
+          <details>
+            <summary>음성 메시지 10초</summary>
+            <div class="detail">얼굴 노출이 너무 크면, 먼저 짧은 음성 메시지로 “내 목소리가 남는 느낌”을 관찰할 수 있어요.</div>
+          </details>
+          <details>
+            <summary>만남 뒤 사진·영상 다시 생각하기</summary>
+            <div class="detail">호정이에게는 만남이 먼저이고 사진·영상이 나중일 수도 있어요. 이 순서가 이상한 게 아니라, 호정이 마음의 안전 순서일 수 있어요.</div>
+          </details>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="경계 기준">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 14 · 사랑과 경계</div>
+          <div class="chapter-title">
+            <div class="emoji">⚖️</div>
+            <h2>사랑한다고 해서 나를 잃어야 하는 건 아니에요</h2>
+          </div>
+          <p class="chapter-sub">경계는 차가움이 아니라 사랑을 오래 가게 하는 울타리일 수 있어요.</p>
+        </div>
+        <div class="chapter-body">
+          <div class="twocol">
+            <div class="mini"><b>억지 희생</b>안 하면 미움받을까 봐 하는 선택. 하고 나서 나를 잃은 느낌이 커짐.</div>
+            <div class="mini"><b>내가 선택한 사랑</b>무섭지만 내가 원해서 하는 선택. 하고 나서도 내 생활로 돌아오는 길이 있음.</div>
+          </div>
+          <p>호정이가 세워볼 수 있는 경계 기준은 이런 거예요.</p>
+          <div class="checklist">
+            <div class="check">오늘 만남 시간은 몇 분까지가 안전한가?</div>
+            <div class="check">만난 뒤 바로 깊은 대화를 하지 않아도 되는가?</div>
+            <div class="check">내가 감정을 정리할 시간을 요청할 수 있는가?</div>
+            <div class="check">상대가 아쉬워해도 오늘 정한 선을 지킬 수 있는가?</div>
+            <div class="check">이 선택을 하고도 내 일상으로 돌아올 계획이 있는가?</div>
+          </div>
+          <p class="quote">“나는 사랑하면서도 내 속도를 말할 수 있다.”</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="동행과 환경">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 15 · 환경 설계</div>
+          <div class="chapter-title">
+            <div class="emoji">🛟</div>
+            <h2>혼자 용기 내야만 진짜 용기인 건 아니에요</h2>
+          </div>
+          <p class="chapter-sub">안전한 환경은 회피가 아니라 다리가 될 수 있어요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>동생이나 믿을 만한 사람이 근처에 있어주는 것은 약함의 증거가 아니에요. 다만 그 도움이 “피하는 이유”가 아니라 “작게 실행하는 다리”가 되면 좋아요.</p>
+          <div class="flow">
+            <div class="flow-row"><div class="num">1</div><div class="flow-box"><b>동행</b><span>같이 이동하되, 만남 자리에는 혼자 들어갈지 정하기.</span></div></div>
+            <div class="flow-row"><div class="num">2</div><div class="flow-box"><b>장소</b><span>너무 사적인 장소보다 낮, 공공장소, 돌아가기 쉬운 곳.</span></div></div>
+            <div class="flow-row"><div class="num">3</div><div class="flow-box"><b>시간</b><span>처음부터 길게가 아니라 5~10분으로 정하기.</span></div></div>
+            <div class="flow-row"><div class="num">4</div><div class="flow-box"><b>종료</b><span>정해둔 시간이 되면 성공으로 보고 마무리하기.</span></div></div>
+          </div>
+          <p class="note green"><b>환경 설계의 목표:</b> 안 무섭게 만드는 게 아니라, 무서워도 돌아올 길이 있다는 느낌을 주는 것.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="필기와 말하기">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 16 · 필기와 말하기</div>
+          <div class="chapter-title">
+            <div class="emoji">💬</div>
+            <h2>호정이가 필기에게 말할 수 있는 안전한 문장들</h2>
+          </div>
+          <p class="chapter-sub">명확한 말은 관계를 차갑게 만드는 게 아니라 불안을 줄여줄 수 있어요.</p>
+        </div>
+        <div class="chapter-body">
+          <div class="checklist">
+            <div class="check">“내가 너를 보기 싫은 게 아니라, 보고 나서 내 감정이 커질까 봐 무서운 것 같아.”</div>
+            <div class="check">“사진이나 영상은 나한테 저장되고 남는 느낌이 있어서 실제 만남보다 더 크게 느껴져.”</div>
+            <div class="check">“오늘은 결론을 내리기보다, 내가 뭘 무서워하는지 정확히 보고 싶어.”</div>
+            <div class="check">“만약 만나면 처음에는 짧게 보고, 그 뒤에 감정을 정리할 시간이 필요해.”</div>
+            <div class="check">“무섭지만 피하고만 싶지는 않아. 다만 내가 나를 잃지 않는 방식으로 해보고 싶어.”</div>
+          </div>
+          <p class="note amber">이 문장들은 변명보다 설명에 가까워요. 설명이 생기면 필기도 기다림이 막연한지 아닌지를 더 잘 볼 수 있어요.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="상담에 가져가기">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 17 · 상담에 가져갈 질문</div>
+          <div class="chapter-title">
+            <div class="emoji">🧑‍⚕️</div>
+            <h2>상담에서 바로 다뤄볼 수 있는 질문들</h2>
+          </div>
+          <p class="chapter-sub">상담 시간을 더 구체적으로 쓰기 위한 카드예요.</p>
+        </div>
+        <div class="chapter-body">
+          <div class="checklist">
+            <div class="check">사진이 무서운 이유가 외모 평가인지, 저장되는 흔적인지, 관계의 끝을 먼저 걱정하는 것인지 구분하고 싶어요.</div>
+            <div class="check">만남 이후 감정이 커질 때 제가 저를 잃지 않으려면 어떤 기준을 세우면 좋을까요?</div>
+            <div class="check">미안함이 들면 관계를 줄이고 싶어지는 패턴을 어떻게 다룰 수 있을까요?</div>
+            <div class="check">제가 “끝내야 하나”라고 느낄 때, 그것이 진짜 결정인지 회피인지 구분하는 방법이 있을까요?</div>
+            <div class="check">상상 노출을 할 때 무엇을 기록해야 실제 변화로 이어질까요?</div>
+            <div class="check">처음 만남을 5~10분으로 한다면, 사전·사후 루틴을 어떻게 만들면 좋을까요?</div>
+          </div>
+          <p class="note sky">상담에서 “저 왜 이래요?”보다 “이 패턴을 어떻게 다뤄볼까요?”로 가져가면 훨씬 실제적인 도움을 받을 수 있어요.</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="용기">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 18 · 용기</div>
+          <div class="chapter-title">
+            <div class="emoji">🔥</div>
+            <h2>용기는 안 무서운 상태가 아니라, 무서워도 방향을 잃지 않는 마음이에요</h2>
+          </div>
+          <p class="chapter-sub">용기는 감정이 아니라 선택에 가까울 수 있어요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>호정이에게 필요한 용기는 갑자기 담대해지는 용기가 아닐 수 있어요.</p>
+          <div class="checklist">
+            <div class="check">두려움을 인정하는 용기</div>
+            <div class="check">끝을 먼저 상상하고 있다는 걸 알아차리는 용기</div>
+            <div class="check">미안함이 든다고 바로 도망가지 않는 용기</div>
+            <div class="check">내가 원하는 사랑과 내가 필요한 경계를 같이 말하는 용기</div>
+            <div class="check">큰 결론보다 작은 행동을 선택하는 용기</div>
+          </div>
+          <p class="quote">“나는 무섭지 않은 사람이 되어서 움직이는 게 아니라, 무서운 나를 데리고도 아주 작게 움직여볼 수 있다.”</p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="말씀">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 19 · 말씀과 기도</div>
+          <div class="chapter-title">
+            <div class="emoji">✝️</div>
+            <h2>붙들 수 있는 말씀과 짧은 기도</h2>
+          </div>
+          <p class="chapter-sub">두려운 마음을 부정하지 않고 하나님 앞에 가져가는 카드예요.</p>
+        </div>
+        <div class="chapter-body">
+          <div class="verse">
+            <div class="ref">이사야 41:10</div>
+            <blockquote>“두려워하지 말라 내가 너와 함께 함이라…”</blockquote>
+            <p class="small">두려움이 없어야만 가는 게 아니라, 붙들어 주시는 분이 계시기에 갈 수 있다는 위로예요.</p>
+          </div>
+          <div class="verse">
+            <div class="ref">디모데후서 1:7</div>
+            <blockquote>“두려워하는 마음이 아니요 오직 능력과 사랑과 절제하는 마음…”</blockquote>
+            <p class="small">사랑과 절제, 둘 다 하나님이 주시는 마음일 수 있어요.</p>
+          </div>
+          <div class="verse">
+            <div class="ref">시편 56:3</div>
+            <blockquote>“내가 두려워하는 날에는 내가 주를 의지하리이다”</blockquote>
+            <p class="small">두려움이 없는 날만이 아니라, 두려운 날에도 의지할 수 있다는 고백이에요.</p>
+          </div>
+          <div class="note sky">
+            <b>짧은 기도</b><br/>
+            하나님, 제 마음이 무서움으로 너무 빨리 도망가지 않게 해주세요. 사랑 안에서 저 자신을 잃지 않게 하시고, 두려움 속에서도 오늘의 작은 선택을 할 수 있도록 붙들어 주세요.
+          </div>
+          <p class="small">전체 본문 확인: <a href="https://bible.bskorea.or.kr" target="_blank" rel="noreferrer">대한성서공회 성경 플랫폼</a></p>
+        </div>
+      </section>
+
+      <section class="chapter" data-title="오늘 선택">
+        <div class="chapter-head">
+          <div class="kicker">Chapter 20 · 오늘의 작은 선택</div>
+          <div class="chapter-title">
+            <div class="emoji">🌷</div>
+            <h2>과거는 설명이 될 수 있지만, 미래를 막는 운명은 아니에요</h2>
+          </div>
+          <p class="chapter-sub">마지막 카드는 결론보다 방향을 정하는 카드예요.</p>
+        </div>
+        <div class="chapter-body">
+          <p>지금까지 미뤄진 시간은 바꿀 수 없어요. 하지만 앞으로도 똑같아야 하는 건 아니에요.</p>
+          <p>변화는 “완벽하게 준비된 나”가 나타나는 순간 시작되는 게 아니라, <b>무서운 나를 데리고도 아주 작은 선택을 하는 순간</b> 시작될 수 있어요.</p>
+          <div class="checklist">
+            <div class="check">오늘 나는 결론을 급히 내리지 않고 내 마음을 정확히 보겠다.</div>
+            <div class="check">내가 피하는 것이 사람인지, 감정인지, 끝의 상상인지 구분해보겠다.</div>
+            <div class="check">감정일기를 자책의 기록이 아니라 선택의 기록으로 써보겠다.</div>
+            <div class="check">사랑과 경계가 함께 갈 수 있다는 가능성을 버리지 않겠다.</div>
+            <div class="check">혼자 감당하기 너무 큰 날에는 상담자나 믿을 만한 사람에게 도움을 요청하겠다.</div>
+          </div>
+          <div class="note violet"><b>마지막 문장</b><br/>나는 문제 있는 사람이 아니라, 지금 내 마음을 배우는 중인 사람이다. 나는 과거를 설명으로 삼을 수 있지만, 미래의 선택까지 포기하지 않아도 된다.</div>
+          <details>
+            <summary>자료 링크</summary>
+            <div class="detail">
+              성경: <a href="https://bible.bskorea.or.kr" target="_blank" rel="noreferrer">대한성서공회 성경 플랫폼</a><br/>
+              회피와 안전행동: <a href="https://www.simplypsychology.org/safety-behaviors-in-anxiety.html" target="_blank" rel="noreferrer">Simply Psychology 자료</a><br/>
+              감정 이름 붙이기: <a href="https://collaborate.princeton.edu/en/publications/putting-feelings-into-words-affect-labeling-disrupts-amygdala-act/" target="_blank" rel="noreferrer">Affect labeling 연구 요약</a>
+            </div>
+          </details>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="nav" aria-label="카드 이동">
+      <button id="prev" type="button" aria-label="이전 챕터">‹</button>
+      <div class="dots" id="dots" aria-label="현재 위치"></div>
+      <button id="next" type="button" aria-label="다음 챕터">›</button>
+    </nav>
+  </div>
+
+  <script>
+    const slider = document.getElementById("slider");
+    const chapters = Array.from(document.querySelectorAll(".chapter"));
+    const tabs = document.getElementById("tabs");
+    const dots = document.getElementById("dots");
+    const counter = document.getElementById("counter");
+    const fill = document.getElementById("fill");
+    const prev = document.getElementById("prev");
+    const next = document.getElementById("next");
+    const chapterLabel = document.getElementById("chapterLabel");
+    const tocToggle = document.getElementById("tocToggle");
+    const tocSheet = document.getElementById("tocSheet");
+    const tocClose = document.getElementById("tocClose");
+    const backdrop = document.getElementById("backdrop");
+
+    let current = 0;
+    let ticking = false;
+
+    chapters.forEach((chapter, index) => {
+      const title = chapter.dataset.title || `챕터 ${index + 1}`;
+
+      const tab = document.createElement("button");
+      tab.type = "button";
+      tab.className = "tab";
+      tab.textContent = `${index + 1}. ${title}`;
+      tab.setAttribute("aria-label", `${index + 1}번 챕터 ${title}로 이동`);
+      tab.addEventListener("click", () => {
+        goTo(index);
+        closeToc();
+      });
+      tabs.appendChild(tab);
+
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "dot";
+      dot.setAttribute("aria-label", `${index + 1}번 챕터로 이동`);
+      dot.addEventListener("click", () => goTo(index));
+      dots.appendChild(dot);
+    });
+
+    const tabEls = Array.from(document.querySelectorAll(".tab"));
+    const dotEls = Array.from(document.querySelectorAll(".dot"));
+
+    function openToc(){
+      tocSheet.classList.add("open");
+      backdrop.classList.add("open");
+    }
+
+    function closeToc(){
+      tocSheet.classList.remove("open");
+      backdrop.classList.remove("open");
+    }
+
+    tocToggle.addEventListener("click", openToc);
+    tocClose.addEventListener("click", closeToc);
+    backdrop.addEventListener("click", closeToc);
+
+    function closestIndex(){
+      const sliderRect = slider.getBoundingClientRect();
+      const center = sliderRect.left + sliderRect.width / 2;
+      let bestIndex = 0;
+      let bestDistance = Infinity;
+
+      chapters.forEach((chapter, index) => {
+        const rect = chapter.getBoundingClientRect();
+        const chapterCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(center - chapterCenter);
+        if(distance < bestDistance){
+          bestDistance = distance;
+          bestIndex = index;
+        }
+      });
+
+      return bestIndex;
+    }
+
+    function goTo(index){
+      index = Math.max(0, Math.min(chapters.length - 1, index));
+      const left = chapters[index].offsetLeft - slider.offsetLeft;
+      slider.scrollTo({ left, behavior:"smooth" });
+      update(index);
+    }
+
+    function update(index){
+      current = index;
+      const title = chapters[index].dataset.title || `챕터 ${index + 1}`;
+      counter.textContent = `${index + 1} / ${chapters.length}`;
+      chapterLabel.textContent = `${index + 1}. ${title}`;
+      fill.style.width = `${((index + 1) / chapters.length) * 100}%`;
+
+      tabEls.forEach((t,i)=> {
+        const active = i === index;
+        t.classList.toggle("active", active);
+        t.setAttribute("aria-current", active ? "true" : "false");
+      });
+
+      dotEls.forEach((d,i)=> {
+        const active = i === index;
+        d.classList.toggle("active", active);
+        d.setAttribute("aria-current", active ? "true" : "false");
+      });
+
+      prev.disabled = index === 0;
+      next.disabled = index === chapters.length - 1;
+    }
+
+    slider.addEventListener("scroll", () => {
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const index = closestIndex();
+        if(index !== current) update(index);
+        ticking = false;
+      });
+    }, {passive:true});
+
+    prev.addEventListener("click", () => goTo(current - 1));
+    next.addEventListener("click", () => goTo(current + 1));
+
+    window.addEventListener("resize", () => {
+      goTo(current);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "ArrowLeft") goTo(current - 1);
+      if(e.key === "ArrowRight") goTo(current + 1);
+      if(e.key === "Escape") closeToc();
+    });
+
+    update(0);
+  </script>
+</body>
+</html>
