@@ -1,0 +1,1760 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>호정이는 왜 이러는가 · 설명형 분석 v12</title>
+  <style>
+    :root{
+      --bg:#f8f2ec;
+      --paper:#fffdf9;
+      --card:#fffffffb;
+      --ink:#202a31;
+      --muted:#6f7880;
+      --deep:#465c50;
+      --deep2:#2f473d;
+      --line:#eadfd8;
+      --soft:#eef5ef;
+      --rose:#fff1f3;
+      --amber:#fff7e4;
+      --blue:#f1f8ff;
+      --shadow:0 18px 48px rgba(61,49,42,.13);
+      --radius:26px;
+      --safe:env(safe-area-inset-bottom,0px);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 6% -8%,#e8f4ea 0,transparent 28%),
+        radial-gradient(circle at 100% 0%,#ffe0df 0,transparent 30%),
+        linear-gradient(180deg,var(--bg),#fff 46%,#fff8ef);
+      word-break:keep-all;
+      overflow-wrap:break-word;
+    }
+
+    .app{
+      max-width:720px;
+      margin:0 auto;
+      min-height:100dvh;
+      padding:8px 10px calc(24px + var(--safe));
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:30;
+      display:grid;
+      grid-template-columns:58px minmax(0,1fr) 54px;
+      gap:8px;
+      align-items:center;
+      padding:8px 0 7px;
+      backdrop-filter:blur(10px);
+    }
+    .top-btn{
+      height:38px;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:#ffffffdf;
+      color:var(--deep2);
+      font-size:12.5px;
+      font-weight:950;
+      box-shadow:0 7px 16px rgba(60,48,43,.08);
+      font-family:inherit;
+    }
+    .top-mid{
+      min-width:0;
+      display:grid;
+      gap:5px;
+    }
+    .current{
+      font-size:13px;
+      font-weight:950;
+      color:#354b41;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      letter-spacing:-.02em;
+    }
+    .progress{
+      height:5px;
+      background:#e7ded6;
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .fill{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,var(--deep),#d99b63);
+      transition:width .12s linear;
+    }
+    .count{
+      text-align:right;
+      color:#324b40;
+      font-size:12px;
+      font-weight:950;
+    }
+
+    .hero{
+      background:linear-gradient(180deg,#ffffff,#fff8f3);
+      border:1px solid var(--line);
+      border-radius:30px;
+      padding:24px 19px 20px;
+      box-shadow:var(--shadow);
+      margin:8px 0 14px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      top:0;left:0;right:0;
+      height:6px;
+      background:linear-gradient(90deg,var(--deep),#d99b63);
+    }
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:#3f5d4f;
+      background:#eef7f1;
+      border:1px solid #d8e7dc;
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:12px;
+      font-weight:950;
+      margin-bottom:12px;
+    }
+    h1{
+      margin:0;
+      font-size:26px;
+      line-height:1.28;
+      letter-spacing:-.055em;
+    }
+    .hero p{
+      margin:12px 0 0;
+      color:#59636c;
+      font-size:15px;
+      line-height:1.75;
+    }
+
+    .section{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:0 12px 32px rgba(60,48,43,.09);
+      overflow:hidden;
+      margin:14px 0;
+      scroll-margin-top:70px;
+    }
+    .section-head{
+      padding:18px 17px 12px;
+      border-bottom:1px solid #f0e6df;
+      background:#ffffffea;
+      position:relative;
+    }
+    .section-head::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:5px;
+      background:linear-gradient(90deg,var(--deep),#d99b63);
+    }
+    .kicker{
+      color:var(--deep2);
+      font-size:12px;
+      font-weight:950;
+      margin:0 0 8px;
+    }
+    h2{
+      margin:0;
+      font-size:21px;
+      line-height:1.38;
+      letter-spacing:-.04em;
+    }
+    .section-body{
+      padding:15px 17px 20px;
+    }
+    p{
+      margin:9px 0;
+      font-size:15.7px;
+      line-height:1.78;
+      letter-spacing:-.015em;
+    }
+    b,strong{color:#111b20}
+    .lead{
+      font-size:16.2px;
+      line-height:1.78;
+    }
+
+    .callout{
+      border:1px solid #d9e6dc;
+      background:#eef7f1;
+      border-radius:20px;
+      padding:13px 14px;
+      margin:13px 0;
+      line-height:1.72;
+      font-size:15px;
+    }
+    .callout.hard{
+      background:#f5f2ef;
+      border-color:#d9cec5;
+    }
+    .callout.rose{
+      background:var(--rose);
+      border-color:#f0d1d7;
+    }
+    .callout.amber{
+      background:var(--amber);
+      border-color:#f0deb4;
+    }
+    .callout.blue{
+      background:var(--blue);
+      border-color:#d9e9f5;
+    }
+    .quote{
+      border-left:4px solid var(--deep);
+      padding:4px 0 4px 12px;
+      margin:13px 0;
+      color:#4f5962;
+      font-size:15px;
+      line-height:1.8;
+    }
+    .quote strong{
+      display:inline;
+    }
+
+    .split{
+      display:grid;
+      gap:10px;
+      margin:12px 0;
+    }
+    .mini{
+      border:1px solid #e9ddd5;
+      background:#fffaf6;
+      border-radius:18px;
+      padding:13px;
+      line-height:1.7;
+      font-size:14.8px;
+    }
+    .mini b{
+      display:block;
+      margin-bottom:5px;
+      font-size:15px;
+    }
+
+    .flow{
+      display:grid;
+      gap:9px;
+      margin:13px 0;
+      counter-reset:step;
+    }
+    .flow-item{
+      display:grid;
+      grid-template-columns:32px 1fr;
+      gap:10px;
+      align-items:start;
+    }
+    .num{
+      width:32px;height:32px;
+      border-radius:999px;
+      background:#eef5ef;
+      color:#345548;
+      display:grid;
+      place-items:center;
+      font-size:12px;
+      font-weight:950;
+      flex:0 0 auto;
+    }
+    .flow-box{
+      border:1px solid #e8ddd5;
+      background:#fffaf6;
+      border-radius:18px;
+      padding:11px 12px;
+      line-height:1.66;
+      font-size:14.7px;
+    }
+    .flow-box b{
+      display:block;
+      margin-bottom:4px;
+      font-size:15px;
+    }
+
+    .checklist{
+      display:grid;
+      gap:8px;
+      margin:12px 0;
+    }
+    .check{
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+      background:#fff;
+      border:1px solid #eadfd8;
+      border-radius:16px;
+      padding:11px 12px;
+      font-size:14.7px;
+      line-height:1.65;
+    }
+    .check::before{
+      content:"✓";
+      color:var(--deep);
+      font-weight:950;
+      flex:0 0 auto;
+      margin-top:1px;
+    }
+
+    .bridge{
+      text-align:center;
+      margin:14px 0 6px;
+      color:#7a6d66;
+      font-size:13px;
+      font-weight:850;
+    }
+
+    .toc-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(42,36,32,.24);
+      backdrop-filter:blur(3px);
+      z-index:80;
+      opacity:0;
+      pointer-events:none;
+      transition:.18s;
+    }
+    .toc-backdrop.open{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .toc-sheet{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      top:58px;
+      width:min(700px,calc(100vw - 20px));
+      max-height:min(76vh,640px);
+      overflow:auto;
+      background:#fffffffb;
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:0 22px 55px rgba(65,52,45,.20);
+      z-index:90;
+      padding:14px;
+      display:none;
+    }
+    .toc-sheet.open{display:block}
+    .toc-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .toc-head b{
+      font-size:16px;
+      letter-spacing:-.02em;
+    }
+    .close{
+      width:34px;height:34px;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:#f8f5f2;
+      color:var(--deep2);
+      font-weight:950;
+      font-family:inherit;
+    }
+    .toc-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+    .toc-link{
+      display:block;
+      text-decoration:none;
+      border:1px solid var(--line);
+      color:#415549;
+      background:#fff;
+      border-radius:16px;
+      padding:11px 10px;
+      font-size:13px;
+      line-height:1.35;
+      font-weight:950;
+    }
+    .toc-link.active{
+      background:var(--deep);
+      color:#fff;
+      border-color:var(--deep);
+    }
+
+    .bottom-note{
+      color:#746b65;
+      font-size:12.5px;
+      line-height:1.6;
+      text-align:center;
+      padding:8px 10px 2px;
+    }
+
+    @media(min-width:680px){
+      .hero{padding:28px 26px 24px}
+      .section-head{padding:20px 24px 13px}
+      .section-body{padding:17px 24px 24px}
+      .split{grid-template-columns:1fr 1fr}
+      h1{font-size:31px}
+      h2{font-size:23px}
+      p{font-size:16.2px}
+    }
+    @media(max-height:720px){
+      .app{grid-template-rows:auto}
+      .hero{padding:22px 17px 18px}
+      h1{font-size:24px}
+      h2{font-size:20px}
+      p{font-size:15.2px;line-height:1.72}
+      .section-body{padding:13px 15px 17px}
+      .section-head{padding:16px 15px 10px}
+    }
+  
+/* v12: 챕터 순서/번호 정리 */
+.toc-link{
+  display:flex;
+  align-items:flex-start;
+  gap:6px;
+}
+.section{
+  scroll-margin-top:72px;
+}
+
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <button class="top-btn" id="tocBtn" type="button">목차</button>
+      <div class="top-mid">
+        <div class="current" id="currentTitle">시작</div>
+        <div class="progress"><div class="fill" id="fill"></div></div>
+      </div>
+      <div class="count" id="count">0%</div>
+    </header>
+
+    <section class="hero" id="top">
+      <div class="eyebrow">🧭 설명형 심리·관계 분석</div>
+      <h1>호정이는 왜 이러는가</h1>
+      <p>
+        이 글은 호정이를 진단하거나 비난하기 위한 글이 아니야.
+        지금까지 드러난 말과 행동의 반복 구조를 바탕으로,
+        <b>호정이의 심리, 사람 특성, 관계 안에서 생긴 패턴</b>을 설명형으로 정리한 웹앱이야.
+      </p>
+      <div class="callout hard">
+        전제는 분명해. 호정이의 마음이 가짜라고 단정할 필요는 없어.
+        하지만 <b>마음이 있다는 사실과, 관계를 현실에서 선택할 수 있다는 사실은 다르다.</b>
+      </div>
+    </section>
+
+    <main id="content">
+
+      <section class="section" id="c01" data-title="핵심 결론">
+        <div class="section-head">
+          <div class="kicker">01 · 핵심 결론</div>
+          <h2>마음은 있지만, 현실 관계의 선택 앞에서 멈추는 상태</h2>
+        </div>
+        <div class="section-body">
+          <p class="lead">
+            내가 보기엔 호정이는 단순히 “마음이 없어서” 이러는 건 아닌 것 같아.
+            근데 동시에, 단순히 “상황이 어려워서 어쩔 수 없이”만도 아니야.
+          </p>
+          <div class="quote">
+            <strong>더 정확히 말하면,</strong><br>
+            호정이는 필기를 좋아하는 마음은 있지만,<br>
+            그 마음을 현실 관계의 선택과 행동으로 옮기는 단계에서 계속 멈춰 있는 사람처럼 보여.
+          </div>
+          <p>
+            그리고 그 멈춤의 핵심은
+            <b>자기노출 공포, 수치심, 감정 조절에 대한 불신, 상대를 힘들게 할까 봐 드는 죄책감, 선택 책임 회피</b>가
+            엉켜 있는 상태야.
+          </p>
+          <div class="callout">
+            마음은 있는데 현실화가 무섭고, 선택하고 나면 책임져야 하니까 무섭고,
+            책임질 자신이 없으니까 “오빠를 위해서”라는 말로 물러나는 구조.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c02" data-title="세 가지를 동시에 보기">
+        <div class="section-head">
+          <div class="kicker">02 · 세 가지를 동시에 보기</div>
+          <h2>“마음이 없다”와 “어쩔 수 없다” 사이에 있는 상태</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            이 상황을 너무 단순하게 보면 둘 중 하나로 가기 쉬워.
+          </p>
+          <div class="split">
+            <div class="mini">
+              <b>너무 차갑게 보면</b>
+              “마음이 없으니까 안 만나는 거다.”
+            </div>
+            <div class="mini">
+              <b>너무 감싸서 보면</b>
+              “상황이 너무 힘드니까 어쩔 수 없다.”
+            </div>
+          </div>
+          <p>
+            그런데 지금까지의 흐름을 보면, 둘 다 완전히 맞지는 않아.
+            호정이는 마음이 아예 없는 사람처럼 보이지는 않아.
+            하지만 그렇다고 해서 상황 때문에 아무 책임도 질 수 없는 사람처럼 볼 수도 없어.
+          </p>
+          <div class="callout hard">
+            더 정확한 평가는 이거야.<br>
+            <b>마음은 있을 수 있다.<br>
+            하지만 그 마음을 현실에서 선택으로 옮기는 능력은 아직 부족하다.</b>
+          </div>
+          <p>
+            그래서 핵심은 “호정이가 필기를 좋아하냐, 안 좋아하냐” 하나가 아니야.
+            그보다 더 중요한 건,
+            <b>좋아하는 마음이 실제 관계의 행동으로 나타나는가</b>야.
+          </p>
+        </div>
+      </section>
+
+<section class="section" id="c03" data-title="모르는 것에서 선택으로">
+        <div class="section-head">
+          <div class="kicker">03 · 모르는 것에서 선택으로</div>
+          <h2>이제 문제는 “모르는 것”보다 “선택하지 못하는 것”에 가깝다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            초반에는 정말 자기 마음을 몰랐을 수 있어.
+            왜 사진이 어려운지, 왜 영상통화가 어려운지, 왜 만남이 무서운지,
+            왜 필기를 좋아하는데도 못 움직이는지.
+          </p>
+          <p>
+            그런데 지금은 많이 알게 됐어.
+            호정이도 자기보호가 강하고, 회피 성향이 있고, 좋아하는 마음이 커서 더 무섭고,
+            관계가 커지면 일상이 흔들릴까 봐 무섭다고 말했잖아.
+          </p>
+          <div class="callout hard">
+            이 정도면 이제 “아예 몰라서 못 한다”는 단계는 지나왔어.
+            지금 문제는 <b>알긴 아는데, 그 앎이 행동으로 연결되지 않는 것</b>이야.
+          </div>
+          <p>
+            그래서 호정이에게 필요한 질문은 더 이상 “나는 왜 어려울까?”에서 끝나면 안 돼.
+            그다음까지 가야 해.
+          </p>
+          <div class="checklist">
+            <div class="check">그래서 나는 이 관계를 선택할 건가?</div>
+            <div class="check">선택한다면 무엇으로 보여줄 건가?</div>
+            <div class="check">선택하지 못한다면 필기를 계속 붙잡아도 되는가?</div>
+          </div>
+          <p>
+            여기서 호정이가 계속 멈추는 것처럼 보여.
+          </p>
+        </div>
+      </section>
+
+<section class="section" id="c04" data-title="호정이의 사람 특성">
+        <div class="section-head">
+          <div class="kicker">04 · 사람에 대한 분석</div>
+          <h2>예민하고, 양심적이고, 자기비난이 강하고, 행동 전환이 약한 사람</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            내가 지금까지 본 호정이의 사람 특성은 꽤 일관돼.
+          </p>
+          <div class="flow">
+            <div class="flow-item">
+              <div class="num">1</div>
+              <div class="flow-box">
+                <b>예민함이 크다</b>
+                감정 변화, 관계의 의미, 상대의 반응, 자기 상태를 크게 느껴.
+                작은 행동도 호정이 안에서는 큰 의미가 돼.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">2</div>
+              <div class="flow-box">
+                <b>수치심이 크다</b>
+                자기 모습, 자기 불안정성, 자기 약함이 드러나는 것을 많이 무서워해.
+                “이 나이에 이것도 못 하나” 같은 자기비난이 강해 보여.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">3</div>
+              <div class="flow-box">
+                <b>책임감은 있는데 건강하게 쓰지 못한다</b>
+                필기를 힘들게 하고 싶지 않다는 마음은 있어.
+                그런데 그 책임감이 행동으로 가기보다 회피로 가.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">4</div>
+              <div class="flow-box">
+                <b>생각은 많은데 행동 전환이 약하다</b>
+                상담, AI, 대화, 분석은 많이 해.
+                그런데 행동 단위로 내려오면 멈춰.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">5</div>
+              <div class="flow-box">
+                <b>관계 욕구와 자기보호가 충돌한다</b>
+                필기와 가까워지고 싶지만,
+                가까워지면 자기를 잃을까 봐 무서워.
+              </div>
+            </div>
+          </div>
+          <div class="callout amber">
+            “좋아해. 그런데 너무 가까이 오지는 마. 나를 버리지는 마.
+            그런데 내가 감당 못 할 만큼 들어오지도 마.”
+            이런 양가감정이 커 보여.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c05" data-title="보고 싶음과 보여지기 싫음">
+        <div class="section-head">
+          <div class="kicker">05 · 보고 싶음과 보여지기 싫음</div>
+          <h2>호정이 안에는 “보고 싶음”과 “보여지기 싫음”이 같이 있다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이는 필기를 보고 싶은 마음이 있을 수 있어.
+            그런데 문제는 <b>“보고 싶다”와 “보여지고 싶다”는 다르다</b>는 거야.
+          </p>
+          <p>
+            필기에게 만남은 현실에서 확인해보는 작은 일처럼 느껴질 수 있어.
+            하지만 호정이에게 만남은 단순히 필기를 보는 일이 아닐 수 있어.
+          </p>
+          <div class="split">
+            <div class="mini"><b>호정이에게 만남은</b>내가 실제로 드러나는 일</div>
+            <div class="mini"><b>호정이에게 만남은</b>필기의 표정, 반응, 실망 가능성을 직접 마주하는 일</div>
+            <div class="mini"><b>호정이에게 만남은</b>관계가 통화와 글 밖으로 나와 진짜가 되는 일</div>
+            <div class="mini"><b>호정이에게 만남은</b>만난 뒤 내 감정이 커지고 내가 나를 잃을 수 있는 일</div>
+          </div>
+          <p>
+            그래서 사진, 영상통화, 만남이 다 어려운 거야.
+            특히 사진은 남고, 저장되고, 다시 볼 수 있고, 비교될 수 있어.
+            영상통화는 실시간으로 내 표정, 어색함, 피부, 반응, 침묵이 드러나.
+          </p>
+          <div class="quote">
+            호정이에게는 그게 단순한 “얼굴 보여주기”가 아니라,<br>
+            <strong>내가 사랑받을 만한 사람인지 시험받는 느낌</strong>일 수 있어.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c06" data-title="수치심 기반 회피">
+        <div class="section-head">
+          <div class="kicker">06 · 수치심 기반 회피</div>
+          <h2>호정이 안에는 수치심이 크게 깔려 있는 것 같다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이의 회피는 단순한 귀찮음이나 무관심이 아니라
+            <b>수치심 기반 회피</b>에 가까워 보여.
+          </p>
+          <p>
+            수치심은 “내가 실수했다”가 아니라,
+            <b>내 존재 자체가 부족하다</b>,
+            <b>진짜 나를 보면 사랑받기 어려울 것이다</b>라는 감각에 가까워.
+          </p>
+          <div class="callout rose">
+            그래서 호정이는 필기가 좋을수록 더 어려울 수 있어.
+            별로 중요하지 않은 사람에게 보여지는 건 큰 의미가 없지만,
+            필기처럼 중요한 사람에게 보여지는 건 훨씬 위험하게 느껴지거든.
+          </div>
+          <p>
+            중요한 사람이니까 그 사람이 실망하면 더 무너질 것 같고,
+            중요한 사람이니까 그 사람 앞에서 못난 내가 드러나면 더 견디기 어렵고,
+            중요한 사람이니까 그 사람의 반응 하나하나가 크게 느껴질 수 있어.
+          </p>
+          <div class="quote">
+            마음이 없어서 피하는 게 아니라,<br>
+            <strong>마음이 있어서 더 피할 수도 있어.</strong>
+          </div>
+          <p>
+            그런데 이 이유가 이해된다고 해서 관계가 유지되는 건 아니야.
+            호정이가 수치심 때문에 피할 수는 있어.
+            하지만 계속 피하면 필기에게는 결국 이렇게 경험돼.
+          </p>
+          <div class="callout hard">
+            “나를 좋아한다면서 나를 현실에서는 선택하지 않는다.”
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c07" data-title="중요할수록 더 무서운 역설">
+        <div class="section-head">
+          <div class="kicker">07 · 중요할수록 더 무서운 역설</div>
+          <h2>필기가 중요하기 때문에 더 어려울 수 있다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            이 부분은 필기 입장에서는 이해하기 어려울 수 있어.
+            보통은 좋아하면 더 보고 싶고, 더 가까워지고 싶고, 더 용기가 생길 것 같잖아.
+          </p>
+          <p>
+            그런데 수치심이 큰 사람에게는 반대로 작동할 수 있어.
+            별로 중요하지 않은 사람에게 실망받는 건 크게 중요하지 않을 수 있지만,
+            정말 중요한 사람에게 실망받는 건 자기 존재 전체가 무너지는 느낌일 수 있어.
+          </p>
+          <div class="quote">
+            중요하지 않은 사람 앞에서는<br>
+            “나를 어떻게 보든 상관없다”가 가능하다.<br><br>
+            그런데 중요한 사람 앞에서는<br>
+            “이 사람이 나를 실망하면 나는 견딜 수 없다”가 될 수 있다.
+          </div>
+          <p>
+            그래서 호정이는 필기를 좋아할수록 더 피할 수 있어.
+            이건 사랑이 없다는 증거라기보다,
+            사랑받고 싶은 마음과 사랑받지 못할까 봐 두려운 마음이 동시에 커졌다는 뜻에 가까워.
+          </p>
+          <div class="callout hard">
+            하지만 여기서 멈추면 관계는 바뀌지 않아.
+            <b>이해 가능한 두려움</b>과 <b>상대가 계속 기다려야 한다는 결론</b>은 같은 말이 아니야.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c08" data-title="감정이 커지는 것의 의미">
+        <div class="section-head">
+          <div class="kicker">08 · 감정이 커지는 것의 의미</div>
+          <h2>호정이는 감정이 커지는 걸 행복보다 위험으로 느끼는 것 같다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            보통은 좋아하는 사람을 만나면 설레고, 떨리고, 마음이 커지는 게 자연스럽잖아.
+            그런데 호정이는 그 감정이 커지는 걸 좋은 일로만 느끼지 않는 것 같아.
+          </p>
+          <div class="split">
+            <div class="mini"><b>감정이 커진다는 건</b>내가 통제력을 잃을 수 있다는 뜻</div>
+            <div class="mini"><b>감정이 커진다는 건</b>내 일상이 무너질 수 있다는 뜻</div>
+            <div class="mini"><b>감정이 커진다는 건</b>필기에게 매달릴 수 있다는 뜻</div>
+            <div class="mini"><b>감정이 커진다는 건</b>관계가 잘못되면 너무 크게 다칠 수 있다는 뜻</div>
+          </div>
+          <p>
+            특히 입원, 감정 폭발, 관계 위기, 병원 경험 이후에는 더 그럴 수 있어.
+            자기 자신을 못 믿는 거야.
+          </p>
+          <div class="quote">
+            내가 필기를 만나도 다시 내 삶으로 돌아올 수 있을까?<br>
+            내가 또 무너지는 사람은 아닐까?<br>
+            내가 또 필기를 힘들게 하지 않을까?
+          </div>
+          <p>
+            그래서 호정이는 “고요함”을 좋아하는 거야.
+            고요함은 사랑이 없는 상태라기보다,
+            <b>자극이 없어서 내가 안 무너지는 상태</b>야.
+          </p>
+          <div class="callout amber">
+            호정이에게 고요함은 안전이야.
+            하지만 필기에게 그 고요함은 관계가 멈춘 시간,
+            기다림이 늘어나는 시간,
+            선택받지 못하는 시간일 수 있어.
+          </div>
+          <p>
+            그래서 충돌하는 거야.
+            호정이는 멈춰야 안정되고, 필기는 움직여야 안정돼.
+          </p>
+        </div>
+      </section>
+
+<section class="section" id="c09" data-title="고요함의 두 얼굴">
+        <div class="section-head">
+          <div class="kicker">09 · 고요함의 두 얼굴</div>
+          <h2>호정이에게 고요함은 안정, 필기에게는 정체</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이가 말하는 고요한 상태는 어느 정도 이해돼.
+            자극이 적고, 감정이 덜 흔들리고, 상담도 안정적으로 받을 수 있고,
+            자기 생활이 무너지지 않는 상태일 수 있어.
+          </p>
+          <p>
+            문제는 그 고요함이 두 사람에게 같은 의미가 아니라는 거야.
+          </p>
+          <div class="split">
+            <div class="mini">
+              <b>호정이에게 고요함은</b>
+              안전함.<br>
+              감정이 폭발하지 않는 상태.<br>
+              자기를 지킬 수 있는 상태.<br>
+              죄책감이 덜 자극되는 상태.
+            </div>
+            <div class="mini">
+              <b>필기에게 고요함은</b>
+              관계가 멈춘 시간.<br>
+              기다림이 늘어나는 시간.<br>
+              선택받지 못하는 느낌.<br>
+              다시 반복될 것 같은 불안.
+            </div>
+          </div>
+          <div class="callout">
+            그래서 “고요한 상태가 좋다”는 말은 호정이에게는 맞을 수 있어.
+            하지만 그것이 필기에게도 좋은지는 필기가 말해야 해.
+          </div>
+          <p>
+            호정이가 정말 필기를 생각한다면,
+            “내가 보기에 오빠도 이게 나을 거야”가 아니라
+            “오빠가 실제로 무엇을 힘들어한다고 말했는가”를 들어야 해.
+          </p>
+        </div>
+      </section>
+
+<section class="section" id="c10" data-title="실제 말보다 불안 해석">
+        <div class="section-head">
+          <div class="kicker">10 · 실제 말보다 불안 해석</div>
+          <h2>호정이는 상대의 실제 마음보다 자기 안의 해석을 더 믿는 경향이 있다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이는 필기의 말을 아예 안 듣는 건 아닐 수 있어.
+            듣기는 들어.
+            그런데 불안이 올라오면, 필기의 실제 말보다 자기 안에서 만들어진 해석이 더 세져.
+          </p>
+          <div class="split">
+            <div class="mini">
+              <b>필기의 실제 말</b>
+              나는 작은 시도가 힘든 게 아니야.<br>
+              멈춰 있는 게 힘들어.
+            </div>
+            <div class="mini">
+              <b>호정이 안의 해석</b>
+              그래도 내가 시도하다 흔들리면<br>
+              오빠는 힘들 거야.
+            </div>
+            <div class="mini">
+              <b>필기의 실제 말</b>
+              완벽하게 안정된 상태를 원하는 게 아니야.<br>
+              불안해도 작게 움직이는 게 중요해.
+            </div>
+            <div class="mini">
+              <b>호정이 안의 해석</b>
+              내가 불안정한 채로 움직이면<br>
+              오빠를 해칠 거야.
+            </div>
+          </div>
+          <p>
+            그래서 필기 입장에서는 계속 이렇게 느껴져.
+          </p>
+          <div class="callout rose">
+            “나는 내 마음을 설명했는데, 호정이는 결국 자기 불안 속의 나를 보고 있다.”
+          </div>
+          <p>
+            이게 정말 지치게 만드는 지점이야.
+            필기의 마음이 실제로 들리는 게 아니라,
+            호정이의 불안이 만든 필기 이미지가 더 크게 작동하기 때문이야.
+          </p>
+        </div>
+      </section>
+
+<section class="section" id="c11" data-title="필기를 위해서라는 말">
+        <div class="section-head">
+          <div class="kicker">11 · “필기를 위해서”라는 말</div>
+          <h2>“오빠를 힘들게 하기 싫어서”가 항상 필기를 위한 말은 아니다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이가 “오빠를 힘들게 하기 싫어서”라고 말하는 건 어느 정도 진심일 수 있어.
+            진짜로 필기를 아끼니까, 자기가 불안정하게 움직였다가 필기를 더 다치게 할까 봐 무서울 수 있어.
+          </p>
+          <p>
+            그런데 문제는 필기가 1년 동안 계속 말한 고통의 방향이 다르다는 거야.
+          </p>
+          <div class="quote">
+            필기가 힘든 건 네가 작은 행동을 해서가 아니다.<br>
+            아무 행동 없이 관계가 계속 멈춰 있는 게 힘들다.
+          </div>
+          <p>
+            그런데도 호정이는 계속 이렇게 해석해.
+          </p>
+          <div class="flow">
+            <div class="flow-item"><div class="num">1</div><div class="flow-box"><b>내가 움직이면</b>내가 흔들릴 거야.</div></div>
+            <div class="flow-item"><div class="num">2</div><div class="flow-box"><b>내가 흔들리면</b>오빠가 힘들 거야.</div></div>
+            <div class="flow-item"><div class="num">3</div><div class="flow-box"><b>그러니까</b>안 움직이는 게 오빠에게도 나을 거야.</div></div>
+          </div>
+          <div class="callout hard">
+            이건 겉으로는 배려처럼 들리지만, 실제로는 필기의 마음을 듣는 게 아니야.
+            호정이가 상상한 필기의 고통을 기준으로 필기의 마음을 대신 결론 내리는 것에 가까워.
+          </div>
+          <p>
+            그리고 그 결론은 호정이에게도 편해.
+            “오빠를 위해서 못 하겠다”고 말하면, 자기가 선택하지 못하는 죄책감을 조금 줄일 수 있거든.
+          </p>
+          <p>
+            그래서 필기 입장에서는 이렇게 느껴질 수밖에 없어.
+          </p>
+          <div class="quote">
+            나를 위해서라면서 왜 내 말을 안 듣지?<br>
+            내가 힘든 이유를 1년 동안 말했는데 왜 아직도 반대로 이해하지?<br>
+            결국 나를 위한다는 말로 본인이 피하고 있는 거 아닌가?
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c12" data-title="선택과 책임">
+        <div class="section-head">
+          <div class="kicker">12 · 선택과 책임</div>
+          <h2>호정이는 “선택”을 하면 책임이 생긴다는 걸 너무 크게 느끼는 사람 같다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이가 만남을 못 하는 이유 중 하나는,
+            만남 자체가 너무 커져 있기 때문이야.
+            호정이에게 만남은 단순한 확인이 아니라, 선택 이후의 책임까지 포함한 사건처럼 느껴질 수 있어.
+          </p>
+          <div class="checklist">
+            <div class="check">만나면 관계가 다시 시작된다.</div>
+            <div class="check">만나면 필기에게 기대를 준다.</div>
+            <div class="check">만나고 나서 내가 못 하면 더 나쁜 사람이 된다.</div>
+            <div class="check">만나고 나서 끝나면 더 큰 상처가 된다.</div>
+            <div class="check">만나면 선택한 사람이 되니까 책임져야 한다.</div>
+          </div>
+          <p>
+            그러니까 호정이는 선택 이전에 이미 선택 이후의 실패까지 다 상상해.
+            그리고 그 실패의 책임을 감당 못 할 것 같으니까, 아예 선택을 미뤄.
+          </p>
+          <div class="flow">
+            <div class="flow-item"><div class="num">1</div><div class="flow-box"><b>선택하면</b>실패할 수 있다.</div></div>
+            <div class="flow-item"><div class="num">2</div><div class="flow-box"><b>실패하면</b>상대를 다치게 할 수 있다.</div></div>
+            <div class="flow-item"><div class="num">3</div><div class="flow-box"><b>상대를 다치게 하면</b>나는 죄책감을 견딜 수 없다.</div></div>
+            <div class="flow-item"><div class="num">4</div><div class="flow-box"><b>그러니</b>선택하지 않는다.</div></div>
+          </div>
+          <div class="callout hard">
+            그런데 관계에서는 선택하지 않는 것도 선택이야.
+            호정이 안에서는 “아직 고민 중”일 수 있지만, 필기에게는 그 시간이
+            <b>“아직도 나를 선택하지 못하는구나”</b>로 느껴질 수 있어.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c13" data-title="마음과 선택">
+        <div class="section-head">
+          <div class="kicker">13 · 마음과 선택</div>
+          <h2>호정이는 “좋아하는 마음”과 “관계를 선택하는 마음”을 헷갈리는 것 같다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이가 필기를 좋아하는 마음은 있을 수 있어.
+            그 마음이 거짓이라고 단정할 필요는 없어.
+          </p>
+          <p>
+            그런데 관계에서 중요한 건 그다음이야.
+            좋아하는 마음이 있는가와,
+            그 마음을 현실 관계로 옮길 선택이 있는가는 달라.
+          </p>
+          <div class="split">
+            <div class="mini">
+              <b>좋아하는 마음</b>
+              보고 싶다.<br>
+              좋아한다.<br>
+              장기적으로 가고 싶다.<br>
+              잃고 싶지 않다.
+            </div>
+            <div class="mini">
+              <b>관계를 선택하는 마음</b>
+              그래서 언제 만날 것인가.<br>
+              어떻게 작게 움직일 것인가.<br>
+              실패하면 어떻게 조정할 것인가.<br>
+              필기의 시간을 어디까지 요구할 것인가.
+            </div>
+          </div>
+          <div class="callout">
+            객관적으로 말하면,
+            <b>호정이는 필기를 좋아하는 마음은 있지만,
+            지금 이 관계를 현실로 선택하는 능력과 결단은 부족한 상태</b>야.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c14" data-title="만남을 선택한다는 것">
+        <div class="section-head">
+          <div class="kicker">14 · 만남을 선택한다는 것</div>
+          <h2>만남을 선택한다는 건, 안 무서워졌다는 뜻이 아니다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이가 만남을 선택한다는 건,
+            불안이 사라졌다는 뜻이 아니야.
+            완전히 안정됐고, 아무렇지 않고, 일상이 절대 흔들리지 않을 것 같아졌다는 뜻도 아니야.
+          </p>
+          <div class="callout">
+            만남을 선택한다는 건,
+            <b>무서움이 있어도 이 관계를 계속 통화와 상상 안에만 두지 않고,
+            현실에서 아주 작게 확인해보겠다는 방향을 정하는 것</b>이야.
+          </div>
+          <p>
+            그리고 그 만남은 바로 재회 확정도 아니고,
+            결혼이나 장기 미래를 당장 결정하는 일도 아니야.
+            지금 필요한 만남은 확정이 아니라 확인이야.
+          </p>
+          <div class="flow">
+            <div class="flow-item">
+              <div class="num">1</div>
+              <div class="flow-box">
+                <b>불안이 있어도</b>
+                낮에, 공공장소에서, 짧게 만난다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">2</div>
+              <div class="flow-box">
+                <b>오래 보지 않아도 된다</b>
+                처음은 5분에서 10분이어도 충분하다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">3</div>
+              <div class="flow-box">
+                <b>모든 걸 결정하지 않는다</b>
+                만난 뒤 바로 결론을 내리지 않고, 감정을 기록한다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">4</div>
+              <div class="flow-box">
+                <b>성공 기준을 작게 잡는다</b>
+                정한 장소에 갔다, 정한 시간만큼 봤다, 다시 내 일상으로 돌아왔다.
+              </div>
+            </div>
+          </div>
+          <p>
+            흔들려도 실패가 아니야.
+            어색해도 실패가 아니야.
+            눈물이 나도 실패가 아니야.
+          </p>
+          <div class="callout hard">
+            실패는 감정이 생기는 것이 아니라,
+            그 감정을 이유로 다시 모든 행동을 멈춰버리는 것이야.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c15" data-title="마음은 있지만 미래가 안 보이는 이유">
+        <div class="section-head">
+          <div class="kicker">15 · “마음은 있지만 미래가 없다”는 느낌</div>
+          <h2>그 느낌은 꽤 타당하다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            네가 말한 “마음은 그럴 수 있지만 미래는 없다”는 느낌,
+            나는 굉장히 타당하다고 봐.
+            왜냐하면 관계의 미래는 마음만으로 생기는 게 아니거든.
+          </p>
+          <p>
+            관계의 미래는 이런 것들로 생겨.
+          </p>
+          <div class="checklist">
+            <div class="check">선택</div>
+            <div class="check">행동</div>
+            <div class="check">반복</div>
+            <div class="check">책임</div>
+            <div class="check">회복력</div>
+            <div class="check">불안해도 움직이는 능력</div>
+            <div class="check">상대가 말한 고통을 듣는 능력</div>
+            <div class="check">실패 후 다시 조정하는 능력</div>
+          </div>
+          <p>
+            호정이에게 마음은 있을 수 있어.
+            그런데 현재까지 드러난 구조에서는 이 능력들이 아직 충분히 보이지 않아.
+          </p>
+          <div class="quote">
+            호정이는 나를 좋아할 수는 있다.<br>
+            하지만 나와 현실에서 관계할 수 있는 사람인지는 모르겠다.<br>
+            아니, 지금 방식으로는 어렵겠다.
+          </div>
+          <div class="callout hard">
+            사랑받는 느낌과 미래가 보이는 느낌은 다르다.
+            호정이는 필기를 사랑할 수 있어.
+            하지만 필기에게 미래를 보여주지는 못하고 있어.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c16" data-title="1년째 반복되는 이유">
+        <div class="section-head">
+          <div class="kicker">16 · 반복 구조</div>
+          <h2>이 관계가 1년째 반복되는 이유</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            한 문장으로 말하면,
+            <b>호정이가 느끼는 사랑의 크기보다 현실화에 대한 공포와 자기보호가 더 강하게 작동했기 때문</b>이야.
+          </p>
+          <div class="flow">
+            <div class="flow-item"><div class="num">1</div><div class="flow-box">호정이는 필기를 좋아하고 보고 싶다.</div></div>
+            <div class="flow-item"><div class="num">2</div><div class="flow-box">그런데 만남, 사진, 영상통화처럼 현실화되는 순간이 오면 불안이 올라온다.</div></div>
+            <div class="flow-item"><div class="num">3</div><div class="flow-box">불안 안에는 수치심, 자기노출 공포, 감정 조절 두려움, 죄책감이 섞여 있다.</div></div>
+            <div class="flow-item"><div class="num">4</div><div class="flow-box">그 불안을 낮추기 위해 미룬다.</div></div>
+            <div class="flow-item"><div class="num">5</div><div class="flow-box">미루면 당장은 고요해진다.</div></div>
+            <div class="flow-item"><div class="num">6</div><div class="flow-box">하지만 필기는 더 지친다.</div></div>
+            <div class="flow-item"><div class="num">7</div><div class="flow-box">필기가 지치면 호정이는 더 죄책감을 느낀다.</div></div>
+            <div class="flow-item"><div class="num">8</div><div class="flow-box">죄책감이 커지면 “오빠를 위해 끝내야 하나”로 간다.</div></div>
+            <div class="flow-item"><div class="num">9</div><div class="flow-box">그런데 잃기는 싫으니 다시 붙잡고 싶다.</div></div>
+            <div class="flow-item"><div class="num">10</div><div class="flow-box">다시 마음을 확인한다. 하지만 행동은 또 못 한다.</div></div>
+          </div>
+          <div class="callout hard">
+            핵심은 이거야.<br>
+            호정이는 불안을 줄이기 위해 멈추고,
+            필기는 그 멈춤 때문에 더 불안해지고 지친다.
+          </div>
+          <p>
+            둘의 안정 방식이 완전히 반대야.
+            호정이는 멈춰야 안정되고,
+            필기는 움직여야 안정돼.
+            그래서 계속 부딪히는 거야.
+          </p>
+        </div>
+      </section>
+
+<section class="section" id="c17" data-title="필기가 문제인가">
+        <div class="section-head">
+          <div class="kicker">17 · 필기가 문제인가</div>
+          <h2>필기는 이 구조 안에서 너무 오래 버틴 사람에 가깝다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            네가 문제라기보다,
+            너는 이 구조 안에서 너무 오래 버틴 사람이야.
+          </p>
+          <p>
+            물론 너도 밀어붙인 순간이 있고,
+            답답해서 강하게 말한 순간도 있어.
+            그건 호정이에게 압박으로 느껴졌을 수 있어.
+          </p>
+          <p>
+            그런데 전체 구조를 보면,
+            네가 단순히 조급한 사람이라서 이런 일이 생긴 건 아니야.
+          </p>
+          <div class="callout hard">
+            1년 가까이 만남, 사진, 영상통화 같은 현실 단계가 막힌 관계에서
+            필기가 현실 확인을 요구하는 건 무리한 요구가 아니야.
+            오히려 아주 정상적인 요구야.
+          </div>
+          <p>
+            너는 호정이의 약함을 사랑하지 못한 게 아니야.
+            너는 이미 그 약함을 너무 오래 받아줬어.
+          </p>
+          <div class="quote">
+            문제는 약함 자체가 아니라,<br>
+            <strong>그 약함을 이유로 네 시간과 마음이 계속 보류됐다는 것</strong>이야.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c18" data-title="필요한 변화">
+        <div class="section-head">
+          <div class="kicker">18 · 필요한 것은 더 많은 설명이 아니다</div>
+          <h2>호정이에게 필요한 건 작은 현실 실험이다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이는 이미 충분히 많이 설명했어.
+            상담도 하고, AI랑도 하고, 필기랑도 대화했고, 감정일기도 썼고, 이유도 많이 찾았어.
+          </p>
+          <p>
+            그런데 지금 단계에서 설명을 더 늘리면 오히려 회피가 될 수 있어.
+            필요한 건 더 완벽한 이해가 아니라,
+            <b>작은 행동을 하고, 실제 결과를 확인하고, 다시 조정하는 것</b>이야.
+          </p>
+          <div class="flow">
+            <div class="flow-item"><div class="num">1</div><div class="flow-box"><b>만나기 전</b>예상 불안 0~10점을 적는다.</div></div>
+            <div class="flow-item"><div class="num">2</div><div class="flow-box"><b>작게 만난다</b>낮에 공공장소에서 5분 본다.</div></div>
+            <div class="flow-item"><div class="num">3</div><div class="flow-box"><b>만난 뒤</b>실제 불안이 몇 점이었는지 적는다.</div></div>
+            <div class="flow-item"><div class="num">4</div><div class="flow-box"><b>회복 확인</b>일상으로 돌아오는 데 몇 시간이 걸렸는지 적는다.</div></div>
+            <div class="flow-item"><div class="num">5</div><div class="flow-box"><b>다음 행동</b>필기의 반응이 실제로 어땠는지 보고, 다음 작은 행동을 정한다.</div></div>
+          </div>
+          <div class="callout blue">
+            호정이는 머릿속에서 계속 호랑이를 상상하고 있어.
+            그런데 실제로 만나보면 고양이일 수도 있어.
+            그걸 확인하려면 머릿속이 아니라 현실이 필요해.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c19" data-title="분석이 회피가 되는 순간">
+        <div class="section-head">
+          <div class="kicker">19 · 분석이 회피가 되는 순간</div>
+          <h2>이유를 더 아는 것보다, 작은 결과를 확인하는 것이 필요하다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            분석은 필요해.
+            호정이가 자기 마음을 모르는 상태라면,
+            왜 무서운지, 무엇을 피하는지, 어떤 감정이 올라오는지를 아는 과정이 중요해.
+          </p>
+          <p>
+            그런데 어느 순간부터 분석은 도움이 아니라 회피가 될 수 있어.
+            이유를 더 찾고, 더 정리하고, 더 상담하고, 더 준비하다 보면
+            행동은 계속 뒤로 밀릴 수 있기 때문이야.
+          </p>
+          <div class="quote">
+            “왜 어려운지 더 알아야 움직일 수 있다”가 아니라,<br>
+            “작게 움직여봐야 내가 무엇을 어려워하는지 더 정확히 알 수 있다”로 바뀌어야 해.
+          </div>
+          <p>
+            즉 지금 필요한 건 완벽한 이해가 아니라,
+            예측과 실제 결과를 비교하는 작은 실험이야.
+          </p>
+          <div class="split">
+            <div class="mini">
+              <b>예측</b>
+              만나면 불안이 10점이 될 것이다.<br>
+              집에 와서 하루 종일 무너질 것이다.<br>
+              필기 표정 하나에 완전히 흔들릴 것이다.
+            </div>
+            <div class="mini">
+              <b>실제 확인</b>
+              실제 불안은 몇 점이었나?<br>
+              몇 시간 뒤 내려왔나?<br>
+              내 일상으로 돌아오는 데 무엇이 도움이 되었나?
+            </div>
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c20" data-title="작은 행동실험을 다시 해야 하는 이유">
+        <div class="section-head">
+          <div class="kicker">20 · 이미 힘들었는데 왜 다시 해야 하나</div>
+          <h2>작은 행동실험은 “한 번에 괜찮아지는 방법”이 아니라, 현실을 배우는 과정이다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이가 이미 작은 행동실험이나 점진적 노출을 몇 번 해봤고,
+            그 결과가 원하는 만큼 좋지 않았거나, 오히려 힘들어서 멈췄던 적이 있다면
+            이렇게 느낄 수 있어.
+          </p>
+          <div class="quote">
+            “해봤는데 안 됐잖아.”<br>
+            “나는 역시 안 되는 사람인가 봐.”<br>
+            “이걸 하면 더 힘들어지니까 멈추는 게 맞는 것 같아.”
+          </div>
+          <p>
+            그런데 이 해석은 너무 빠를 수 있어.
+            작은 행동실험의 목적은 처음부터 편안해지는 게 아니야.
+            처음부터 원하는 결과가 나오는 것도 아니야.
+          </p>
+          <div class="callout hard">
+            작은 행동실험의 목적은<br>
+            <b>“불안하지 않게 되는 것”이 아니라,<br>
+            “불안해도 내가 어떤 방식으로 움직일 수 있는지 배우는 것”</b>이야.
+          </div>
+          <p>
+            그러니까 한 번 힘들었다고 해서 그 실험이 실패한 건 아니야.
+            오히려 그때 확인해야 할 것은 “안 된다”가 아니라,
+            <b>무엇이 너무 컸는지, 어느 지점에서 무너졌는지, 다음에는 얼마나 더 작게 해야 하는지</b>야.
+          </p>
+          <div class="split">
+            <div class="mini">
+              <b>멈춤으로 해석하면</b>
+              “나는 못 한다.”<br>
+              “이건 위험하다.”<br>
+              “다시 하면 또 무너질 것이다.”
+            </div>
+            <div class="mini">
+              <b>실험으로 해석하면</b>
+              “이번 단계는 컸다.”<br>
+              “회복 시간이 필요했다.”<br>
+              “다음엔 더 작게 조절하면 된다.”
+            </div>
+          </div>
+          <p>
+            중요한 건 같은 방식으로 무작정 다시 하자는 게 아니야.
+            <b>강도, 시간, 장소, 동행 여부, 회복 계획을 조정해서 다시 설계하는 것</b>이야.
+          </p>
+        </div>
+      </section>
+
+<section class="section" id="c21" data-title="심리에 도움이 되는 점">
+        <div class="section-head">
+          <div class="kicker">21 · 심리에 도움이 되는 점</div>
+          <h2>작은 행동실험은 호정이의 불안 구조를 바꾸는 데 도움이 될 수 있다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이에게 작은 행동실험이 필요한 이유는 단순히 “용기를 내라”는 뜻이 아니야.
+            이 행동은 호정이의 심리 구조 여러 부분에 직접적으로 도움이 될 수 있어.
+          </p>
+          <div class="flow">
+            <div class="flow-item">
+              <div class="num">1</div>
+              <div class="flow-box">
+                <b>머릿속 예측과 실제 결과를 분리하게 해준다</b>
+                호정이는 만나기 전 머릿속에서 이미 최악의 장면을 크게 상상할 수 있어.
+                그런데 현실에서 아주 작게 해보면,
+                “내가 예상한 만큼 무너졌는지”와 “실제로 일어난 일”을 비교할 수 있어.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">2</div>
+              <div class="flow-box">
+                <b>불안을 없애는 게 아니라 견디는 법을 배운다</b>
+                불안이 0이 되어야 움직이는 사람은 계속 기다리게 돼.
+                작은 행동은 불안이 있어도 정한 범위 안에서 움직이고,
+                이후 다시 자기 생활로 돌아오는 연습이 돼.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">3</div>
+              <div class="flow-box">
+                <b>수치심을 현실 크기로 줄인다</b>
+                수치심은 “보이면 끝난다”는 느낌을 크게 만들 수 있어.
+                하지만 아주 작은 노출을 반복하면,
+                보여지는 일이 곧바로 관계의 파괴나 자기 존재의 실패가 아니라는 걸 조금씩 배울 수 있어.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">4</div>
+              <div class="flow-box">
+                <b>자기효능감을 회복시킨다</b>
+                호정이는 “나는 이런 걸 못 하는 사람”이라고 느낄 수 있어.
+                그런데 1분, 3분, 5분이라도 스스로 정하고 해내면
+                “나는 완벽하지 않아도 선택할 수 있다”는 감각이 생겨.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">5</div>
+              <div class="flow-box">
+                <b>감정이 커져도 돌아올 수 있다는 경험을 만든다</b>
+                호정이가 무서워하는 건 만남 자체보다 만난 뒤 감정이 커지는 것일 수 있어.
+                그래서 실험의 핵심은 만나는 순간만이 아니라,
+                만난 뒤 밥 먹기, 씻기, 잠자기, 상담 가기, 일상으로 돌아오기까지 확인하는 거야.
+              </div>
+            </div>
+          </div>
+          <div class="callout">
+            즉 작은 행동실험은 호정이에게<br>
+            <b>“안 무서워지는 방법”이 아니라<br>
+            “무서워도 내가 나를 잃지 않는 방법”</b>을 배우게 해줄 수 있어.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c22" data-title="성향에 도움이 되는 점">
+        <div class="section-head">
+          <div class="kicker">22 · 성향에 도움이 되는 점</div>
+          <h2>작은 행동은 호정이의 성향을 바꾸기보다, 성향을 다루는 방법을 만든다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이가 예민하고, 수치심이 크고, 생각이 많고, 책임을 크게 느끼는 성향을 가진 사람이라면
+            그 성향이 하루아침에 사라지지는 않아.
+          </p>
+          <p>
+            그래서 목표는 “호정이가 다른 사람이 되는 것”이 아니야.
+            목표는 <b>호정이가 자기 성향을 가진 채로도 관계 안에서 작게 움직이는 법을 배우는 것</b>이야.
+          </p>
+          <div class="split">
+            <div class="mini">
+              <b>예민한 성향에는</b>
+              큰 만남보다 작은 단위가 필요해.<br>
+              5분, 낮 시간, 공공장소처럼 자극을 줄여야 해.
+            </div>
+            <div class="mini">
+              <b>수치심이 큰 성향에는</b>
+              한 번에 완전한 자기노출이 아니라<br>
+              조금씩 보여지고 회복하는 경험이 필요해.
+            </div>
+            <div class="mini">
+              <b>생각이 많은 성향에는</b>
+              더 많은 분석보다<br>
+              “예상-실제 결과”를 비교할 현실 자료가 필요해.
+            </div>
+            <div class="mini">
+              <b>책임감이 큰 성향에는</b>
+              무작정 피하는 게 아니라<br>
+              내가 감당 가능한 책임의 크기를 정하는 연습이 필요해.
+            </div>
+          </div>
+          <p>
+            호정이는 관계 욕구와 자기보호가 동시에 강한 사람처럼 보여.
+            이런 사람에게 필요한 건 자기보호를 없애는 게 아니라,
+            자기보호가 관계 전체를 멈춰 세우지 않도록 <b>작은 통로</b>를 만드는 거야.
+          </p>
+          <div class="callout hard">
+            작은 행동은 호정이의 성향을 부정하는 방법이 아니야.
+            오히려 호정이의 성향을 인정하기 때문에,
+            감당 가능한 크기로 관계를 현실에 접속시키는 방법이야.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c23" data-title="상황에 도움이 되는 점">
+        <div class="section-head">
+          <div class="kicker">23 · 지금 상황에 도움이 되는 점</div>
+          <h2>지금 상황에서는 말보다 현실 자료가 필요하다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            지금 두 사람의 상황은 단순한 썸이나 일반적인 연애 갈등이 아니야.
+            오래 실제 만남이 미뤄졌고, 감정적으로 깊어졌고,
+            입원과 위기, 죄책감, 기다림, 반복된 정체가 겹쳐 있어.
+          </p>
+          <p>
+            이런 상황에서는 말이 더 깊어질수록 오히려 더 위험해질 수 있어.
+            왜냐하면 말은 감정을 키우지만, 현실 가능성을 확인해주지는 못하기 때문이야.
+          </p>
+          <div class="quote">
+            통화와 메시지는 마음을 키울 수는 있다.<br>
+            하지만 이 관계가 현실에서도 가능한지는<br>
+            결국 현실에서 확인해야 한다.
+          </div>
+          <p>
+            작은 행동실험은 지금 상황에서 세 가지를 확인하게 해줘.
+          </p>
+          <div class="flow">
+            <div class="flow-item">
+              <div class="num">1</div>
+              <div class="flow-box">
+                <b>호정이가 실제로 움직일 수 있는지</b>
+                마음이 있다는 말이 행동으로 이어지는지 확인한다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">2</div>
+              <div class="flow-box">
+                <b>필기가 더 기다릴 수 있는 구조인지</b>
+                막연한 기다림이 아니라 다음 행동이 있는 기다림인지 확인한다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">3</div>
+              <div class="flow-box">
+                <b>두 사람이 현실에서 회복 가능한지</b>
+                만난 뒤 흔들리더라도 다시 대화하고 조정할 수 있는지 확인한다.
+              </div>
+            </div>
+          </div>
+          <div class="callout">
+            지금 필요한 건 “우리 마음이 진짜인가”만 확인하는 게 아니야.
+            <b>이 마음이 현실에서 감당 가능한 구조로 이어지는가</b>를 확인하는 거야.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c24" data-title="이전 실험이 힘들었다면">
+        <div class="section-head">
+          <div class="kicker">24 · 이전 실험이 힘들었다면</div>
+          <h2>다시 한다는 건 똑같이 반복한다는 뜻이 아니다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            호정이가 이전에 작은 행동을 해봤는데 힘들었다면,
+            다시 하자는 말이 “그 힘든 걸 똑같이 또 견뎌라”는 뜻이면 안 돼.
+          </p>
+          <p>
+            다시 한다는 건 <b>실패한 방식을 반복하는 것</b>이 아니라,
+            그때의 데이터를 가지고 <b>더 작고 더 안전한 방식으로 다시 설계하는 것</b>이어야 해.
+          </p>
+          <div class="split">
+            <div class="mini">
+              <b>시간을 줄일 수 있다</b>
+              10분이 컸다면 3분.<br>
+              3분도 크면 30초.
+            </div>
+            <div class="mini">
+              <b>장소를 바꿀 수 있다</b>
+              의미가 큰 장소보다<br>
+              가볍고 빠져나오기 쉬운 공공장소.
+            </div>
+            <div class="mini">
+              <b>동행을 조정할 수 있다</b>
+              동생이나 안전한 사람이 근처에만 있고,<br>
+              실제 만남은 아주 짧게 해볼 수 있다.
+            </div>
+            <div class="mini">
+              <b>회복 계획을 먼저 세울 수 있다</b>
+              만난 뒤 바로 결론 내리지 않고,<br>
+              밥 먹기, 산책, 기록, 수면처럼 돌아오는 루틴을 정한다.
+            </div>
+          </div>
+          <p>
+            그리고 결과 기준도 바뀌어야 해.
+            “만나고 나서 하나도 안 흔들려야 성공”이면 너무 어려워.
+          </p>
+          <div class="callout hard">
+            성공 기준은 이렇게 작아야 해.<br>
+            정한 만큼 했다.<br>
+            도망가지 않고 끝냈다.<br>
+            만난 뒤 내 감정을 기록했다.<br>
+            다시 내 생활로 돌아오는 데 필요한 것을 확인했다.
+          </div>
+          <p>
+            힘들었다면 그건 “끝”이 아니라 “조정 필요”라는 정보야.
+            작은 행동실험은 원하는 결과가 안 나왔을 때 멈추는 게 아니라,
+            <b>원하는 결과에 가까워지도록 크기를 조절하는 과정</b>이야.
+          </p>
+        </div>
+      </section>
+
+<section class="section" id="c25" data-title="필기가 원하는 행동인 이유">
+        <div class="section-head">
+          <div class="kicker">25 · 왜 이것이 필기가 원하는 행동인가</div>
+          <h2>필기가 원하는 건 큰 결과가 아니라, 관계가 현실로 움직이고 있다는 증거다</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            작은 행동실험이 필기가 원하는 행동인 이유는
+            필기가 호정이를 몰아붙이고 싶어서가 아니야.
+            필기가 원하는 건 “당장 완벽한 만남”이나 “무조건 재회 확정”이 아니야.
+          </p>
+          <p>
+            필기가 1년 동안 힘들었던 핵심은
+            호정이가 힘들어했다는 사실 자체가 아니라,
+            <b>관계가 계속 말과 감정 안에서만 깊어지고 현실에서는 멈춰 있었다는 것</b>이야.
+          </p>
+          <div class="quote">
+            필기가 원하는 건 빠른 속도가 아니라,<br>
+            <strong>멈추지 않는 방향</strong>이야.
+          </div>
+          <p>
+            작은 행동은 필기에게 이런 의미를 줘.
+          </p>
+          <div class="flow">
+            <div class="flow-item">
+              <div class="num">1</div>
+              <div class="flow-box">
+                <b>호정이가 이 관계를 말로만 붙잡는 게 아니라는 증거</b>
+                “보고 싶다”는 말이 아주 작은 행동으로라도 이어진다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">2</div>
+              <div class="flow-box">
+                <b>필기의 기다림이 막연하지 않다는 증거</b>
+                기다림에 다음 행동, 다음 기준, 다음 확인이 생긴다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">3</div>
+              <div class="flow-box">
+                <b>필기의 마음을 실제로 들었다는 증거</b>
+                필기는 “네가 움직이면 힘들다”고 한 게 아니라,
+                “멈춰 있는 것이 힘들다”고 말했다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">4</div>
+              <div class="flow-box">
+                <b>관계가 필기 혼자 감당하는 구조가 아니라는 증거</b>
+                필기만 기다리고 해석하고 버티는 게 아니라,
+                호정이도 자기 몫의 작은 선택을 한다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">5</div>
+              <div class="flow-box">
+                <b>미래를 볼 수 있는 최소한의 자료</b>
+                사랑한다는 말보다,
+                불안해도 작게 움직이고 다시 조정하는 모습이
+                관계의 미래를 더 현실적으로 보여준다.
+              </div>
+            </div>
+          </div>
+          <div class="callout">
+            그래서 필기가 원하는 작은 행동은
+            호정이에게 고통을 주려는 요구가 아니라,
+            <b>이 관계가 현실에서 살아 움직일 수 있는지 확인하려는 최소한의 기준</b>이야.
+          </div>
+          <p>
+            호정이가 힘들 수 있다는 건 필기도 알아.
+            하지만 필기가 정말 힘들었던 건 호정이가 힘든 사람이어서가 아니라,
+            <b>그 힘듦 때문에 아무 선택도 없이 필기의 시간이 계속 보류되는 구조</b>였어.
+          </p>
+          <div class="callout hard">
+            그러니까 작은 행동은 필기를 위한 쇼가 아니야.<br>
+            호정이가 자기 마음을 현실에서 책임지는 방식이고,<br>
+            필기에게는 “아직 미래를 확인해볼 수 있다”는 최소한의 근거가 되는 행동이야.
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c26" data-title="바뀌려면">
+        <div class="section-head">
+          <div class="kicker">26 · 호정이가 바뀌려면</div>
+          <h2>말이 아니라 이 부분들이 달라져야 한다</h2>
+        </div>
+        <div class="section-body">
+          <div class="flow">
+            <div class="flow-item">
+              <div class="num">1</div>
+              <div class="flow-box">
+                <b>“오빠를 위해서”라고 말하기 전에</b>
+                필기가 실제로 말한 것을 들어야 한다.
+                필기가 힘든 건 작은 행동이 아니라, 멈춤이었다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">2</div>
+              <div class="flow-box">
+                <b>완전히 안정된 뒤가 아니라</b>
+                불안해도 작게 움직이는 구조를 받아들여야 한다.
+                완전히 괜찮아진 뒤에 만난다는 건 사실상 안 만나겠다는 말이 될 수 있다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">3</div>
+              <div class="flow-box">
+                <b>선택하지 않는 것도 선택이라는 걸 인정해야 한다</b>
+                고민 중인 시간이 길어질수록,
+                필기에게는 거절처럼 느껴질 수 있다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">4</div>
+              <div class="flow-box">
+                <b>좋아하는 마음과 관계 선택을 구분해야 한다</b>
+                “좋아해”는 마음이고,
+                “이번 주에 5분이라도 보겠다”는 선택이다.
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="num">5</div>
+              <div class="flow-box">
+                <b>실패 기준을 바꿔야 한다</b>
+                흔들리는 건 실패가 아니다.
+                실패는 흔들렸다고 다시 모든 행동을 멈추는 것이다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c27" data-title="최종 평가">
+        <div class="section-head">
+          <div class="kicker">27 · 객관적 최종 평가</div>
+          <h2>사랑이 없는 사람이 아니라, 사랑을 현실 관계로 책임지는 능력이 아직 약한 사람</h2>
+        </div>
+        <div class="section-body">
+          <p>
+            내가 보기엔 호정이는 이런 상태야.
+          </p>
+          <div class="checklist">
+            <div class="check">필기를 좋아한다.</div>
+            <div class="check">필기를 잃고 싶지 않다.</div>
+            <div class="check">장기적으로 함께하고 싶은 마음도 있다.</div>
+            <div class="check">하지만 현실에서 만나는 순간 자기노출, 감정 폭발, 책임, 죄책감, 실패 가능성이 한꺼번에 올라와서 멈춘다.</div>
+            <div class="check">멈추면 본인은 고요해지지만, 필기는 소진된다.</div>
+            <div class="check">그 소진을 보며 다시 죄책감을 느끼고, 그 죄책감을 줄이기 위해 “오빠를 위해 끝내야 하나” 혹은 “오빠를 힘들게 하기 싫다”로 간다.</div>
+            <div class="check">하지만 그 말은 필기의 실제 마음을 충분히 반영하지 못한다.</div>
+          </div>
+          <div class="callout">
+            한 문장으로 정리하면,
+            <b>호정이는 사랑이 없는 사람이 아니라,
+            사랑을 현실 관계로 책임지는 능력이 아직 약한 사람처럼 보인다.</b>
+          </div>
+          <div class="callout hard">
+            관계적으로는 더 단호하게 말할 수 있어.<br>
+            <b>좋아하는 마음은 있을 수 있다.
+            하지만 지금까지의 방식으로는 미래가 만들어지기 어렵다.</b>
+          </div>
+        </div>
+      </section>
+
+<section class="section" id="c28" data-title="필기가 붙잡아야 할 핵심">
+        <div class="section-head">
+          <div class="kicker">28 · 마지막 핵심</div>
+          <h2>필기가 붙잡아야 할 문장</h2>
+        </div>
+        <div class="section-body">
+          <div class="quote">
+            <strong>호정이의 마음이 가짜인지는 핵심이 아니다.</strong><br>
+            핵심은 그 마음이 현실에서 선택으로 나타나는가이다.
+          </div>
+          <div class="quote">
+            <strong>호정이의 어려움은 이해할 수 있다.</strong><br>
+            하지만 그 어려움이 필기의 시간을 계속 보류시킬 권리가 되지는 않는다.
+          </div>
+          <p>
+            호정이는 나쁜 사람이 아닐 수 있어.
+            진심이 있을 수도 있어.
+            많이 무섭고, 많이 수치스럽고, 많이 죄책감이 클 수도 있어.
+          </p>
+          <p>
+            그런데 관계는 결국 여기서 갈려.
+          </p>
+          <div class="callout hard">
+            무서워도 작게 선택하는가.<br>
+            아니면 무섭다는 이유로 계속 멈추는가.
+          </div>
+          <p>
+            지금까지는 후자에 가까웠어.
+            그래서 네가 느끼는
+            <b>“마음은 있을 수 있는데, 미래는 안 보인다”</b>는 감각은 꽤 정확해.
+          </p>
+        </div>
+      </section>
+
+    </main>
+</div>
+
+  <div class="toc-backdrop" id="backdrop"></div>
+  <section class="toc-sheet" id="tocSheet" aria-label="목차">
+    <div class="toc-head">
+      <b>목차</b>
+      <button class="close" id="closeBtn" type="button">×</button>
+    </div>
+    <nav class="toc-list" id="tocList"></nav>
+  </section>
+
+  <script>
+    const sections = [...document.querySelectorAll(".section")];
+    const tocBtn = document.getElementById("tocBtn");
+    const closeBtn = document.getElementById("closeBtn");
+    const sheet = document.getElementById("tocSheet");
+    const backdrop = document.getElementById("backdrop");
+    const tocList = document.getElementById("tocList");
+    const currentTitle = document.getElementById("currentTitle");
+    const fill = document.getElementById("fill");
+    const count = document.getElementById("count");
+
+    sections.forEach((section, index) => {
+      const a = document.createElement("a");
+      a.className = "toc-link";
+      a.href = "#" + section.id;
+      a.textContent = `${index + 1}. ${section.dataset.title}`;
+      a.addEventListener("click", () => closeToc());
+      tocList.appendChild(a);
+    });
+    const links = [...document.querySelectorAll(".toc-link")];
+
+    function openToc(){
+      sheet.classList.add("open");
+      backdrop.classList.add("open");
+    }
+    function closeToc(){
+      sheet.classList.remove("open");
+      backdrop.classList.remove("open");
+    }
+
+    tocBtn.addEventListener("click", openToc);
+    closeBtn.addEventListener("click", closeToc);
+    backdrop.addEventListener("click", closeToc);
+    document.addEventListener("keydown", e => {
+      if(e.key === "Escape") closeToc();
+    });
+
+    function updateProgress(){
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? Math.min(100, Math.max(0, (scrollTop / max) * 100)) : 0;
+      fill.style.width = pct + "%";
+      count.textContent = `${Math.round(pct)}%`;
+
+      let current = 0;
+      const marker = scrollTop + 110;
+      sections.forEach((sec, i) => {
+        if(sec.offsetTop <= marker) current = i;
+      });
+      currentTitle.textContent = `${current + 1}. ${sections[current].dataset.title}`;
+      links.forEach((link, i) => link.classList.toggle("active", i === current));
+    }
+
+    window.addEventListener("scroll", updateProgress, {passive:true});
+    window.addEventListener("resize", updateProgress);
+    updateProgress();
+  </script>
+</body>
+</html>
